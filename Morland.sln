@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Morland_client", "Morland\Morland.vcxproj", "{63A2EB28-ACC8-411F-9137-E9961C3319D3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Morland_server", "Morland_server\Morland_server.vcxproj", "{0C46CAD6-8E75-41F9-ACDD-587BA7BAA6AD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ENJINE", "ENJINE\ENJINE.vcxitems", "{ABEC1346-C007-4C82-86B7-A2A2D8FA3B99}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{63A2EB28-ACC8-411F-9137-E9961C3319D3}.Debug|x64.ActiveCfg = Debug|x64
+		{63A2EB28-ACC8-411F-9137-E9961C3319D3}.Debug|x64.Build.0 = Debug|x64
+		{63A2EB28-ACC8-411F-9137-E9961C3319D3}.Debug|x86.ActiveCfg = Debug|Win32
+		{63A2EB28-ACC8-411F-9137-E9961C3319D3}.Debug|x86.Build.0 = Debug|Win32
+		{63A2EB28-ACC8-411F-9137-E9961C3319D3}.Release|x64.ActiveCfg = Release|x64
+		{63A2EB28-ACC8-411F-9137-E9961C3319D3}.Release|x64.Build.0 = Release|x64
+		{63A2EB28-ACC8-411F-9137-E9961C3319D3}.Release|x86.ActiveCfg = Release|Win32
+		{63A2EB28-ACC8-411F-9137-E9961C3319D3}.Release|x86.Build.0 = Release|Win32
+		{0C46CAD6-8E75-41F9-ACDD-587BA7BAA6AD}.Debug|x64.ActiveCfg = Debug|x64
+		{0C46CAD6-8E75-41F9-ACDD-587BA7BAA6AD}.Debug|x64.Build.0 = Debug|x64
+		{0C46CAD6-8E75-41F9-ACDD-587BA7BAA6AD}.Debug|x86.ActiveCfg = Debug|Win32
+		{0C46CAD6-8E75-41F9-ACDD-587BA7BAA6AD}.Debug|x86.Build.0 = Debug|Win32
+		{0C46CAD6-8E75-41F9-ACDD-587BA7BAA6AD}.Release|x64.ActiveCfg = Release|x64
+		{0C46CAD6-8E75-41F9-ACDD-587BA7BAA6AD}.Release|x64.Build.0 = Release|x64
+		{0C46CAD6-8E75-41F9-ACDD-587BA7BAA6AD}.Release|x86.ActiveCfg = Release|Win32
+		{0C46CAD6-8E75-41F9-ACDD-587BA7BAA6AD}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A7F3F02D-AD2A-481C-A8E1-9A49BCB63026}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		ENJINE\ENJINE.vcxitems*{0c46cad6-8e75-41f9-acdd-587ba7baa6ad}*SharedItemsImports = 4
+		ENJINE\ENJINE.vcxitems*{63a2eb28-acc8-411f-9137-e9961c3319d3}*SharedItemsImports = 4
+		ENJINE\ENJINE.vcxitems*{abec1346-c007-4c82-86b7-a2a2d8fa3b99}*SharedItemsImports = 9
+	EndGlobalSection
+EndGlobal
