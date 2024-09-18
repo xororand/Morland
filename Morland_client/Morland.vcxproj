@@ -22,7 +22,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{63a2eb28-acc8-411f-9137-e9961c3319d3}</ProjectGuid>
-    <RootNamespace>Morland</RootNamespace>
+    <RootNamespace>Morland_client</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>Morland_client</ProjectName>
   </PropertyGroup>
