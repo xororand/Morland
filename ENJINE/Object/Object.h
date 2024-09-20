@@ -9,6 +9,7 @@ using namespace sf;
 class Object : public Transformable {
 public:
     enum Type {
+        RootObj,
         SpriteObject
     };
 
