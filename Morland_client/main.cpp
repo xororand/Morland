@@ -1,5 +1,11 @@
-﻿#include "Object/SpriteObj/SpriteObj.h"
+﻿#include <iostream>
+#include <format>
+
+#include "Logger/Logger.h"
+
+#include "Object/SpriteObj/SpriteObj.h"
 #include <Object/RootObj/RootObj.h>
+#include <Component/HealthComponent.h>
 
 class Game {
 private:
@@ -13,6 +19,9 @@ public:
 		m_root = RootObj();
 	}
 
+	void receiveData() {
+
+	}
 	void updateEvents() {
 		sf::Event event;
 		while (m_window.pollEvent(event))
@@ -23,6 +32,7 @@ public:
 		}
 	}
 	void drawAll() {
+		ImGui::SFML::Update(m_window, deltaClock.restart());
 		m_window.clear();
 		
 		m_root.draw(m_window);
@@ -35,8 +45,9 @@ public:
         m_window.create(sf::VideoMode(1920, 1080), "Morland");
 		m_window.setFramerateLimit(144);
 
-		!ImGui::SFML::Init(m_window);
+		ImGui::SFML::Init(m_window);
 
+		/*
 		sf::Texture texture;
 		if (!texture.loadFromFile("../ENJINE/Textures/Characters/green_character.png"))
 		{
@@ -47,7 +58,7 @@ public:
 		sprite.setTexture(texture);
 
 		std::shared_ptr<Object> spriteObj = std::make_shared<SpriteObj>(sprite);
-		spriteObj.get()->setOrigin(Vector2f(64, 64));
+
 
 		std::shared_ptr<Object> spriteObj2 = std::make_shared<SpriteObj>(sprite);
 
@@ -57,25 +68,27 @@ public:
 
 		m_root.addObject(spriteObj);
 
+		HealthComponent c_topack = HealthComponent();
+		c_topack.current_health = 80;
 
+		HealthComponent c_tounpack;
+
+		Packet packet;
+		packet << c_topack;
+
+		packet >> c_tounpack;
+		
+		Logger::info( std::format(L"{}", c_tounpack.current_health).c_str() );*/
 
         while (m_window.isOpen())
         {
-			if (ImGui::IsKeyDown(ImGuiKey::ImGuiKey_W))
-				spriteObj.get()->rotate(1.0);
-			if (ImGui::IsKeyDown(ImGuiKey::ImGuiKey_A))
-				spriteObj.get()->move(Vector2f(-1, 0));
-			if (ImGui::IsKeyDown(ImGuiKey::ImGuiKey_S))
-				spriteObj.get()->move(Vector2f(0, 1));
-			if (ImGui::IsKeyDown(ImGuiKey::ImGuiKey_D))
-				spriteObj.get()->move(Vector2f(1, 0));
+			receiveData();
             updateEvents();
-			ImGui::SFML::Update(m_window, deltaClock.restart());
+			
             drawAll();
         }
 
 		ImGui::SFML::Shutdown();
-
         return 0;
 	}
 };

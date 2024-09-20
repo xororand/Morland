@@ -1,5 +1,15 @@
 #include "SpriteObj.h"
 
+void SpriteObj::centered(bool b)
+{
+	if (b) {
+		m_sprite.setOrigin(m_sprite.getTexture()->getSize().x / 2, m_sprite.getTexture()->getSize().y / 2);
+	}
+	else {
+		m_sprite.setOrigin(0, 0);
+	}
+}
+
 void SpriteObj::draw(sf::RenderTarget& target, const sf::Transform& transform) const
 {
 	sf::Transform combinedTransform = transform * getTransform();
@@ -18,8 +28,7 @@ void SpriteObj::draw(sf::RenderTarget& target, const sf::Transform& transform) c
 			//combinedTransform = transform * spriteObj.get()->getTransform();
 			spriteObj.get()->draw(target, combinedTransform);
 		}
-	}
-		
+	}	
 }
 
 void SpriteObj::onDraw(sf::RenderTarget& target, const sf::Transform& transform) const

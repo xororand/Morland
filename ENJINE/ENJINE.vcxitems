@@ -14,7 +14,10 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Component\Component.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Component\HealthComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Logger\Logger.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Network\defines.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Object\Object.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Object\RootObj\RootObj.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Object\SpriteObj\SpriteObj.h" />
