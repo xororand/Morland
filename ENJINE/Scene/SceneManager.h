@@ -1,20 +1,21 @@
 #pragma once
 #include "Scene.h"
-
+#include "Scene/scenes/LauncherScene.h"
+#include "Scene/scenes/WorldScene.h"
 class SceneManager
 {
 private:
-	Scene* m_current_scene;
+	Scene* m_current_scene	= NULL;
+	RenderWindow* m_window	= NULL;
+	NetworkManager* m_netmg = NULL;
 public:
-	SceneManager(Scene* scene_start) {
-		m_current_scene = scene_start;
-	}
-	void setScene(Scene* scene) {
-		// TODO: wait for overing scene
-		m_current_scene = scene;
-	}
-	void processScene() {
-		m_current_scene->process();
-	}
+	SceneManager(RenderWindow* window, NetworkManager* netmg);
+
+	RenderWindow* getRenderWindow();
+	NetworkManager* getNetworkManager();
+
+	void setScene(Scene::Type type);
+	void setScene(Scene* scene);
+	void processScene();
 };
 

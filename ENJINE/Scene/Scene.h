@@ -5,11 +5,12 @@
 
 using namespace sf;
 
+class SceneManager;
 class Scene
 {
 public:
     enum Type {
-        MainMenuScene,
+        LauncherScene,
         WorldScene
     };
 
@@ -29,9 +30,8 @@ public:
     virtual ~Scene() = default;
 
     sf::Clock deltaClock;
-    RenderWindow* m_window;
-    NetworkManager* m_netmg;
-    RootObj m_root;
-    Scene::Type m_type = MainMenuScene;
+    Scene::Type m_type = LauncherScene;
+
+    SceneManager* m_scenemg;
 };
 

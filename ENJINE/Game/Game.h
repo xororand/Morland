@@ -1,6 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "Scene/scenes/MainMenuScene.h"
+#include "Scene/scenes/LauncherScene.h"
 #include "Scene/scenes/WorldScene.h"
 #include "Network/NetworkManager.h"
 #include <Scene/SceneManager.h>
@@ -14,7 +14,9 @@ public:
 	Game() {
 		// INIT Managers
 		m_netmg = new NetworkManager();
-		m_scenemg = new SceneManager(new MainMenuScene(&m_window, m_netmg));
+		m_scenemg = new SceneManager(&m_window, m_netmg);
+
+		m_scenemg->setScene(Scene::LauncherScene);
 	}
 
 	void receiveData() {
@@ -57,9 +59,6 @@ public:
 
 		while (m_window.isOpen())
 		{
-			if (ImGui::IsKeyPressed(ImGuiKey_Q)) {
-				m_scenemg->setScene(new WorldScene(&m_window, m_netmg));
-			}
 			// Прием данных с сервера
 			receiveData();
 			// Процессим сцену

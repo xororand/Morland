@@ -2,13 +2,13 @@
 #include <Scene/Scene.h>
 #include <Network/NetworkManager.h>
 
-class WorldScene : public Scene
+class LauncherScene : public Scene
 {
 private:
 	RootObj m_root;
 	RenderWindow* rw;
 public:
-	WorldScene(SceneManager* scenemg);
+	LauncherScene(SceneManager* scenemg);
 
 	void onProcess();
 	void onDraw();
