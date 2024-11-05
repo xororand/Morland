@@ -8,7 +8,7 @@ class Component {
 public:
     enum Type {
         None,
-        Health
+        HealthComponent
     };
 
     Component::Type getType()           { return m_type;    }

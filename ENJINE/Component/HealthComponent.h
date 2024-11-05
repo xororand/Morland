@@ -8,10 +8,10 @@ public:
 	float current_health;
 
 	HealthComponent(float max_h = 100, float current_h = 100) : 
-		max_health(max_h), 
+		max_health(max_h),
 		current_health(current_h)
 	{
-		setType(Component::Health);
+		setType(Component::HealthComponent);
 	}
 
 	//void	setHealth(float val)		{ current_health = val; }
@@ -20,6 +20,7 @@ public:
 	//void	setMaxHealth(float val)		{ max_health = val; }
 	//float	getMaxHealth()				{ return max_health; }
 };
+
 // NETWORK
 sf::Packet& operator <<(sf::Packet& packet, HealthComponent& c)
 {

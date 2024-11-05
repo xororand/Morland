@@ -15,12 +15,7 @@ public:
 		// INIT Managers
 		m_netmg = new NetworkManager();
 		m_scenemg = new SceneManager(&m_window, m_netmg);
-
 		m_scenemg->setScene(Scene::LauncherScene);
-	}
-
-	void receiveData() {
-		// TODO: Если подключились - сделать смену сцены
 	}
 
 	int run() {
@@ -59,8 +54,6 @@ public:
 
 		while (m_window.isOpen())
 		{
-			// Прием данных с сервера
-			receiveData();
 			// Процессим сцену
 			m_scenemg->processScene();
 		}

@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Scene/scenes/LauncherScene.h"
 #include "Scene/scenes/WorldScene.h"
+
 class SceneManager
 {
 private:

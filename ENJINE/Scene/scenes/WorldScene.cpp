@@ -3,10 +3,10 @@
 
 WorldScene::WorldScene(SceneManager* scenemg) {
 	setType(Scene::WorldScene);
-	m_scenemg = scenemg;
-	m_root = RootObj();
+	setSceneManager(scenemg);
 
-	rw = m_scenemg->getRenderWindow();
+	m_root = RootObj();
+	rw = getSceneManager()->getRenderWindow();
 
 	rw->create(sf::VideoMode::getDesktopMode(), "Morland", sf::Style::Fullscreen);
 	rw->setFramerateLimit(144);

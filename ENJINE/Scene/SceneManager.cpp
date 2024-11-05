@@ -10,17 +10,21 @@ NetworkManager* SceneManager::getNetworkManager() { return m_netmg; }
 
 void SceneManager::setScene(Scene::Type type) {
 	// TODO: wait for overing scene
-	if (type == Scene::LauncherScene) {
-		setScene(new LauncherScene(this));
-	}
-	else if (type == Scene::WorldScene) {
-		setScene(new WorldScene(this));
+	switch (type) {
+		case Scene::LauncherScene:
+			setScene(new LauncherScene(this));
+			break;
+
+		case Scene::WorldScene:
+			setScene(new WorldScene(this));
+			break;
 	}
 }
 void SceneManager::setScene(Scene* scene) {
 	// TODO: wait for overing scene
 	m_current_scene = scene;
 }
+
 void SceneManager::processScene() {
 	m_current_scene->process();
 }

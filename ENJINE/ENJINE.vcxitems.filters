@@ -21,11 +21,15 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Object\RootObj\RootObj.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Object\SpriteObj\SpriteObj.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Object\Object.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Game\Game.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Game.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Network\NetworkManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Scene\SceneManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Scene\scenes\LauncherScene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Scene\scenes\WorldScene.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Scene\Scene.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)mGame\UI\UI.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utils\Utils.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Logger\Logger.h">
@@ -39,9 +43,13 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Network\defines.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene\Scene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene\scenes\LauncherScene.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Game\Game.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Game.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Network\NetworkManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene\SceneManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene\scenes\WorldScene.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mGame\UI\UI.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Utils.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Server.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)defines.h" />
   </ItemGroup>
 </Project>
