@@ -2,26 +2,24 @@
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "SFML/Graphics.hpp"
-#include "defines.h"
+#include "mGame/defines.h"
 #include "Utils/Utils.h"
 
 #include <format>
 
 using namespace sf;
 
+class Game;
+
 class UI
 {
 private:
-    RenderWindow* m_rw;
+    Game* m_game = nullptr;
 public:
-    UI(RenderWindow* rw) { m_rw = rw; }
+    UI(Game* game);
+    Game* getGame();
 
-    void drawVersion() {
-        ImGui::Begin("credits", NULL, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDecoration); 
-        ImGui::SetWindowPos(ImVec2(0, m_rw->getSize().y - ImGui::GetWindowHeight()));
-        ImGui::Text("ver%i.%i.%i%s", MAJOR_VER, MINOR_VER, PATCH_VER, DEFICE);
-        ImGui::End();
-    }
+    void drawVersion();
 
 };
 

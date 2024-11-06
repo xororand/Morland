@@ -1,6 +1,6 @@
 #pragma once
 #include "SFML/Network.hpp"
-#include "Network/defines.h"
+#include "mGame/Managers/Network/defines.h"
 
 using namespace sf;
 

@@ -1,0 +1,48 @@
+#pragma once
+#include <mutex>
+#include "SFML/Graphics.hpp"
+#include <Object/RootObj/RootObj.h>
+#include <mGame/Managers/Network/NetworkManager.h>
+
+using namespace sf;
+
+class SceneManager;
+
+class Scene
+{
+private:
+    std::wstring m_name = L"";
+
+    Game* m_game        = nullptr;
+public:
+    enum Type {
+        LauncherScene,
+        WorldScene
+    };
+
+    void setGame(Game* game) { m_game = game; }
+    Game* getGame() { return m_game; }
+
+    Scene::Type getType()       { return m_type; }
+    void setType(Scene::Type t) { m_type = t; }
+
+    std::wstring getName() { return m_name; }
+    void setName(std::wstring name);
+
+    void process() {
+        this->onProcess();
+        this->onDraw();
+        this->onUpdateEvents();
+    }
+
+    // Общая логика сцены
+    virtual void onProcess() {}
+    virtual void onDraw() {}
+    virtual void onUpdateEvents() {}
+
+    virtual ~Scene() = default;
+
+    sf::Clock deltaClock;
+    Scene::Type m_type = Scene::Type::LauncherScene;
+};
+

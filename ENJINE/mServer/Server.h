@@ -1,6 +1,6 @@
 #pragma once
-#include "defines.h"
-#include "Network/defines.h"
+#include "mGame/defines.h"
+#include "mGame/Managers/Network/defines.h"
 
 class Server
 {
