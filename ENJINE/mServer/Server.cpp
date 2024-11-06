@@ -12,31 +12,38 @@ void Server::accept_new_connections()
 }
 
 void Server::process_connections() {
-
+    for (auto sock : m_sockets) {
+        sock.process();
+    }
 }
 
-void Server::thread_process_socket()
+void Server::tick()
 {
+    getLogger().info(std::format(L"TPS: {}", getCurrentTPS()).c_str());
+    accept_new_connections();
+    process_connections();
+}
+
+void Server::thread_process_socket() {
     while (is_start) {
         tps_mutex.lock();
         float TFLT = m_tps_timer.getElapsedTime().asSeconds();
         tps_mutex.unlock();
-        float coef_tps = ( 1.0 / getCurrentTPS() ) / m_threads.size();
+        float coef_tps = (1.0 / getCurrentTPS()) / m_threads.size();
         float tps_treshold = (float)(1.0 / MAX_TPS) * m_threads.size() - coef_tps;
-        
+
 
         if (TFLT < tps_treshold) {
-            long long t_sleep = (long long)((tps_treshold - TFLT) * 100.0);
-            std::this_thread::sleep_for(std::chrono::milliseconds(t_sleep));
+            float t_sleep = (float)((tps_treshold - TFLT));
+            std::this_thread::sleep_for(std::chrono::milliseconds((long long)t_sleep));
             continue;
         }
-        getLogger().info(std::format(L"TPS: {}", getCurrentTPS()).c_str());
+
+        
+        tick(); // Обрабатываем 1 ТИК
 
         m_tps_timer.restart();
         m_current_tps = 1.0 / TFLT * m_threads.size();
-
-        accept_new_connections();
-        process_connections();
     }
 }
 int Server::run()

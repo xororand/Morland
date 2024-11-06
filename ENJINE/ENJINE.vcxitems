@@ -50,6 +50,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Scenes\WorldScene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\UI\UI.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Server.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utils\Utils.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utils\Logger\Utils.cpp" />
   </ItemGroup>
 </Project>

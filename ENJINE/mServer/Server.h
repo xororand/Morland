@@ -29,6 +29,8 @@ private:
 	void accept_new_connections();
 	void process_connections();
 
+	void tick();
+
 	void thread_process_socket();
 public:
 	Server() {};
