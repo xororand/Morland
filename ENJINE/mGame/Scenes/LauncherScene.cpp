@@ -33,6 +33,7 @@ void LauncherScene::onProcess() {
 			// Мы успешно подключились к серверу
 			// Переходим к синхронизации с миром
 			getGame()->getSceneManager()->setScene(Scene::WorldScene);
+			getGame()->getSceneManager()->setSceneName(L"Morland");
 		} 
 		else if(status == NetworkManager::connection_failed) {
 			// Ошибка при подключении, скорее всего были исчерпаны попытки подключения

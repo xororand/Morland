@@ -7,6 +7,9 @@ Game::Game() {
 
 	m_window = new RenderWindow();
 
+	m_texturemg = new TextureManager(this);
+	m_texturemg->loadTexturesFromRootResources();
+
 	m_netmg = new NetworkManager(this);
 
 	m_scenemg = new SceneManager(this);
@@ -14,8 +17,6 @@ Game::Game() {
 		m_scenemg->setScene(Scene::LauncherScene);
 		m_scenemg->setSceneName(L"Morland Launcher");
 	}
-
-	m_texturemg = new TextureManager(this);
 
 	if (m_netmg && m_scenemg && m_texturemg)
 		Logger::info(L"Инициализация менеджеров прошла успешно!");
