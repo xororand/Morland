@@ -3,7 +3,7 @@
 
 SceneManager::SceneManager(Game* game) {
 	setGame(game);
-	Logger::info(L"Инициализация SceneManager успешна.");
+	getGame()->getLogger().info(L"Инициализация SceneManager успешна.");
 }
 
 void SceneManager::setScene(Scene::Type type) {

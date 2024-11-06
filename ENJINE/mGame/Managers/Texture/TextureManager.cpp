@@ -4,7 +4,7 @@
 
 
 TextureManager::TextureManager(Game* game) {
-	Logger::info(L"Инициализация TextureManager успешна.");
+    getGame()->getLogger().info(L"Инициализация TextureManager успешна.");
 }
 
 sf::Texture* TextureManager::getTexture(std::wstring name)
@@ -50,7 +50,7 @@ void TextureManager::loadTexturesFromRootResources(fs::path dir)
             }
             else
             {
-                Logger::info(std::format(L"[-] Загрузка тестуры {}", outfilename_str).c_str());
+                getGame()->getLogger().info(std::format(L"[-] Загрузка тестуры {}", outfilename_str).c_str());
                 delete texture;
                 continue;
             }
@@ -59,6 +59,6 @@ void TextureManager::loadTexturesFromRootResources(fs::path dir)
             loadTexturesFromRootResources(path);
         }
     }
-    Logger::info(std::format(L"Загружено {} текстур", m_order.size()).c_str());
+    getGame()->getLogger().info(std::format(L"Загружено {} текстур", m_order.size()).c_str());
 }
 

@@ -1,5 +1,10 @@
 #include "NetworkManager.h"
+#include "mGame/Game.h"
 
+NetworkManager::NetworkManager(Game* game) {
+	m_game = game;
+	getGame()->getLogger().info(L"Инициализация NetworkManager успешна.");
+}
 void NetworkManager::set_connection_data(std::string ip, unsigned short port) {
 	last_ip = ip;
 	last_port = port;

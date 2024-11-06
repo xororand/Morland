@@ -16,9 +16,11 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Component\Component.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Component\HealthComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\enjsocket.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\defines.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Game.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Texture\TextureManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\defines.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Logger\Logger.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Network\NetworkManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Scene\SceneManager.h" />
@@ -34,6 +36,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\enjsocket.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Game.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Managers\Texture\TextureManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utils\Logger\Logger.cpp" />

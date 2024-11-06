@@ -31,6 +31,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Utils\Utils.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Server.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Managers\Texture\TextureManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\enjsocket.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Logger\Logger.h">
@@ -53,5 +54,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Server.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\defines.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Texture\TextureManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\defines.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\enjsocket.h" />
   </ItemGroup>
 </Project>

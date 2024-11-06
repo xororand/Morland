@@ -20,16 +20,7 @@ void Logger::info(const wchar_t* str) {
 }
 
 void Logger::save_file(const wchar_t* str) {
-	tm date = get_current_time();
-	FILE* f; 
-	errno_t err = fopen_s(&f, std::format("logs_{}_{}_{}.txt", date.tm_mday, date.tm_mon, date.tm_year).c_str(), "a");
-	if (err != NULL) {
-		exit_error(L"FILE OPEN ERROR", false);
-		return;
-	}
 	_fwprintf_p(f, str);
-
-	fclose(f);
 }
 
 tm Logger::get_current_time()

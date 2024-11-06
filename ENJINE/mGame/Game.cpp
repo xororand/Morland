@@ -3,7 +3,7 @@
 Game::Game() {
 	setlocale(LC_ALL, "RU");
 	// INIT Managers
-	Logger::info(L"Инициализация менеджеров...");
+	getLogger().info(L"Инициализация менеджеров...");
 
 	m_window = new RenderWindow();
 
@@ -19,9 +19,9 @@ Game::Game() {
 	}
 
 	if (m_netmg && m_scenemg && m_texturemg)
-		Logger::info(L"Инициализация менеджеров прошла успешно!");
+		getLogger().info(L"Инициализация менеджеров прошла успешно!");
 	else {
-		Logger::info(L"Инициализация менеджеров потерпела крах !!!");
+		getLogger().info(L"Инициализация менеджеров потерпела крах !!!");
 		exit(1);
 	}
 }

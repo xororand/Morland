@@ -24,10 +24,7 @@ private:
 	std::string		last_ip				= "";
 	unsigned short	last_port			= 0;
 public:
-	NetworkManager(Game* game) {
-		m_game = game;
-		Logger::info(L"Инициализация NetworkManager успешна.");
-	}
+	NetworkManager(Game* game);
 	
 	Game* getGame() { return m_game; }
 	
