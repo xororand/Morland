@@ -142,6 +142,7 @@ int Server::run() {
 
     for (auto& t : m_threads) t->wait();            // Ждем окончания работы потоков
 
+    for (auto p : m_players) disconnect_player(p);  // Отключаем каждого игрока
 
     return 0;
 }
