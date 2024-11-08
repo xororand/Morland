@@ -2,8 +2,13 @@
 
 Game::Game() {
 	setlocale(LC_ALL, "RU");
+
+	m_logger = new Logger();
+
+	//m_io = &ImGui::GetIO();
+
 	// INIT Managers
-	getLogger().info(L"Инициализация менеджеров...");
+	getLogger()->info(L"Инициализация менеджеров...");
 
 	m_window = new RenderWindow();
 
@@ -19,9 +24,9 @@ Game::Game() {
 	}
 
 	if (m_netmg && m_scenemg && m_texturemg)
-		getLogger().info(L"Инициализация менеджеров прошла успешно!");
+		getLogger()->info(L"Инициализация менеджеров прошла успешно!");
 	else {
-		getLogger().info(L"Инициализация менеджеров потерпела крах !!!");
+		getLogger()->info(L"Инициализация менеджеров потерпела крах !!!");
 		exit(1);
 	}
 }
@@ -59,10 +64,11 @@ int Game::run() {
 	packet >> c_tounpack;
 
 	Logger::info( std::format(L"{}", c_tounpack.current_health).c_str() );*/
+	
 	while (m_window->isOpen())
 	{
 		// Процессим сцену
-		m_scenemg->processScene();
+		getSceneManager()->processScene();
 	}
 
 	ImGui::SFML::Shutdown();

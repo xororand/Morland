@@ -9,6 +9,8 @@ private:
 	RootObj m_root;
 
 	std::shared_ptr<UI> ui;
+
+	Thread* t_connect_serv = nullptr;
 public:
 	LauncherScene(Game* game);
 

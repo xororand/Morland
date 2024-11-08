@@ -14,6 +14,6 @@ public:
 
 	void onProcess();
 	void onDraw();
-	void omUpdateEvents();
+	void onUpdateEvents();
 };
 

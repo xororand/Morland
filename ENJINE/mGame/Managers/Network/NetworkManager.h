@@ -28,6 +28,8 @@ public:
 	
 	Game* getGame() { return m_game; }
 	
+	TcpSocket* getTCP() { return m_tcp; }
+
 	void set_connection_data(std::string ip, unsigned short port);
 	void get_connection_data(std::string& ip, unsigned short& port);
 
@@ -40,7 +42,7 @@ public:
 
 	true - подключились / false - ошибка подключения
 	*/
-	Status connect_server();
+	void connect_server();
 
 };
 

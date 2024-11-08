@@ -12,9 +12,10 @@ LauncherScene::LauncherScene(Game* game) {
 	setType(Scene::LauncherScene);
 	setGame(game);
 
+	RenderWindow* rw = getGame()->getRenderWindow();
+
 	m_root = RootObj();
 	
-	RenderWindow* rw = getGame()->getRenderWindow();
 	ui = std::make_shared<UI>( getGame() );
 
 	rw->create(sf::VideoMode(800, 500), "", sf::Style::Titlebar | sf::Style::Close);
@@ -25,20 +26,24 @@ LauncherScene::LauncherScene(Game* game) {
 
 void LauncherScene::onProcess() {
 	NetworkManager* nm = getGame()->getNetworkManager();
-	if (nm->get_status() == NetworkManager::pending_connection) {
-		// Делаем попытку подключения
-		NetworkManager::Status status = nm->connect_server();
+	RenderWindow* rw = getGame()->getRenderWindow();
+
+	if (nm->get_status() == NetworkManager::connection_done) {
+		// Мы успешно подключились к серверу
+		// Переходим к синхронизации с миром
 		
-		if (status == NetworkManager::connection_done) {
-			// Мы успешно подключились к серверу
-			// Переходим к синхронизации с миром
-			getGame()->getSceneManager()->setScene(Scene::WorldScene);
-			getGame()->getSceneManager()->setSceneName(L"Morland");
-		} 
-		else if(status == NetworkManager::connection_failed) {
-			// Ошибка при подключении, скорее всего были исчерпаны попытки подключения
-			return;
-		}
+		if (t_connect_serv) { 
+			t_connect_serv->wait();
+			delete t_connect_serv; 
+		}	// Освобождаем поток из памяти
+
+		getGame()->getSceneManager()->setScene(Scene::WorldScene);
+		getGame()->getSceneManager()->setSceneName(L"Morland");
+		return;
+	} 
+	if(nm->get_status() == NetworkManager::connection_failed) {
+		// Ошибка при подключении, скорее всего были исчерпаны попытки подключения
+		return;
 	}
 }
 
@@ -68,7 +73,9 @@ void LauncherScene::onDraw() {
 		if (nm->get_status() == NetworkManager::connection_failed) {
 			str_error = to_utf8(L"Server is unavailable.").c_str();
 		}
-
+		if (nm->get_status() == NetworkManager::connection_done) {
+			str_error = to_utf8(L"Connected to Server!").c_str();
+		}
 		ImGui::Text( str_error.c_str() );
 
 		static char ip[256] = "";
@@ -100,6 +107,9 @@ void LauncherScene::onDraw() {
 			nm->set_connection_data(str_ip, port);
 			// Установка статуса на попытку подключения
 			nm->set_status(NetworkManager::pending_connection);
+			// Создание потока подключения к серверу
+			t_connect_serv = new Thread(&NetworkManager::connect_server, nm);
+			t_connect_serv->launch();
 		}
 
 		ImGui::SameLine();

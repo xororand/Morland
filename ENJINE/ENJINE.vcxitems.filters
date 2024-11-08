@@ -28,10 +28,11 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Scenes\WorldScene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Managers\Scene\Scene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\UI\UI.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utils\Logger\Utils.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utils\Utils.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Server.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Managers\Texture\TextureManager.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\enjsocket.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Player.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utils\vmath\vmath.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Logger\Logger.h">
@@ -55,6 +56,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\defines.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Texture\TextureManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\defines.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\enjsocket.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Player.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utils\vmath\vmath.h" />
   </ItemGroup>
 </Project>

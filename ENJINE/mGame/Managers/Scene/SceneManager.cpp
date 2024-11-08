@@ -2,8 +2,9 @@
 #include "mGame/Game.h"
 
 SceneManager::SceneManager(Game* game) {
-	setGame(game);
-	getGame()->getLogger().info(L"Инициализация SceneManager успешна.");
+	m_game = game;
+
+	getGame()->getLogger()->info(L"Инициализация SceneManager успешна.");
 }
 
 void SceneManager::setScene(Scene::Type type) {

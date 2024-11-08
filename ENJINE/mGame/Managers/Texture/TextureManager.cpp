@@ -1,10 +1,11 @@
 #include "TextureManager.h"
-#include "TextureManager.h"
 #include "mGame/Game.h"
 
 
 TextureManager::TextureManager(Game* game) {
-    getGame()->getLogger().info(L"Инициализация TextureManager успешна.");
+    m_game = game;
+
+    getGame()->getLogger()->info(L"Инициализация TextureManager успешна.");
 }
 
 sf::Texture* TextureManager::getTexture(std::wstring name)
@@ -50,7 +51,7 @@ void TextureManager::loadTexturesFromRootResources(fs::path dir)
             }
             else
             {
-                getGame()->getLogger().info(std::format(L"[-] Загрузка тестуры {}", outfilename_str).c_str());
+                getGame()->getLogger()->info(std::format(L"[-] Загрузка тестуры {}", outfilename_str).c_str());
                 delete texture;
                 continue;
             }
@@ -59,6 +60,6 @@ void TextureManager::loadTexturesFromRootResources(fs::path dir)
             loadTexturesFromRootResources(path);
         }
     }
-    getGame()->getLogger().info(std::format(L"Загружено {} текстур", m_order.size()).c_str());
+    getGame()->getLogger()->info(std::format(L"Загружено {} текстур", m_order.size()).c_str());
 }
 

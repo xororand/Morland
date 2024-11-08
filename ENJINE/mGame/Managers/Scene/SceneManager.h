@@ -13,7 +13,6 @@ private:
 public:
 	SceneManager(Game* game);
 
-	void setGame(Game* game) { m_game = game; }
 	Game* getGame() { return m_game; }
 
 	void setScene(Scene::Type type);
