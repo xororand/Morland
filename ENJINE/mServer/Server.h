@@ -1,17 +1,15 @@
 #pragma once
-
+#include "mServer/defines.h"
+#include "mGame/Managers/Network/defines.h"
+#include "Utils/Logger/Logger.h"
+#include "Player.h"
+#include "version.h"
 
 #include "windows.h"
 #include <format>
 #include <thread>
 #include <deque>
 #include <vector>
-
-#include "mServer/defines.h"
-#include "mGame/defines.h"
-#include "mGame/Managers/Network/defines.h"
-#include "Player.h"
-#include "Utils/Logger/Logger.h"
 
 class Server
 {

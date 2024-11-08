@@ -8,6 +8,7 @@
 #include "mGame/Scenes/LauncherScene.h"
 #include "mGame/Scenes/WorldScene.h"
 #include "Utils/Logger/Logger.h"
+#include "version.h"
 
 #include <thread>
 

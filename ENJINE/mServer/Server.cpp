@@ -138,9 +138,10 @@ int Server::run() {
 
     if(m_threads.size() > 0) getLogger()->info(L"Server started!");
 
-    for (auto& t : m_threads) t->launch();   // Запуск потоков
+    for (auto& t : m_threads) t->launch();          // Запуск потоков
 
-    for (auto& t : m_threads) t->wait();   // Ждем окончания работы потоков
+    for (auto& t : m_threads) t->wait();            // Ждем окончания работы потоков
+
 
     return 0;
 }

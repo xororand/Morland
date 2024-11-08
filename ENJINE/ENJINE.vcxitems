@@ -17,7 +17,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Component\Component.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Component\HealthComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Player.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)mGame\defines.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Game.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Texture\TextureManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\defines.h" />
@@ -35,6 +34,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Server.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Utils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\vmath\vmath.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Player.cpp" />

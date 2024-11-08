@@ -2,10 +2,11 @@
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "SFML/Graphics.hpp"
-#include "mGame/defines.h"
-#include "Utils/Utils.h"
 
 #include <format>
+
+#include "Utils/Utils.h"
+#include "version.h"
 
 using namespace sf;
 
