@@ -11,15 +11,10 @@ void Server::accept_new_connections() {
     delete sock;
 }
 void Server::process_connections() {
-    std::lock_guard lock(players_mutex);
+    std::lock_guard<std::mutex> lock(players_mutex);
 
     for (auto p : m_players) {
         if (p == nullptr) continue;
-        if (p->getStatus() == Player::status::disconnected) {
-            disconnect_player(p->getIDX());
-            continue; 
-        }
-
         p->process();
     }
 }
@@ -55,16 +50,14 @@ void Server::tick()
     accept_new_connections();
     process_connections();
 }
-
 void Server::thread_process(int id) {
-    
     while (is_run) {
         std::lock_guard lock(tps_mutex);
 
         float TFLT = d_stats->m_tps_timer.getElapsedTime().asSeconds();
 
         if (TFLT < tps_treshold) {
-            float slt = ( (tps_treshold - TFLT)) * 1000;
+            float slt = ( (tps_treshold - TFLT)) * 100;
 
             std::this_thread::sleep_until(
                 std::chrono::steady_clock::now() + std::chrono::milliseconds((long long)slt)
@@ -75,7 +68,6 @@ void Server::thread_process(int id) {
         TFLT = d_stats->m_tps_timer.restart().asSeconds();
         d_stats->m_current_tps = 1.0 / TFLT;
         
-        getLogger()->info( std::format(L"TPS: {} \t|\t idthr #{}", d_stats->m_current_tps, id).c_str() );
         tick(); // Обрабатываем 1 ТИК
     }
 }
@@ -85,10 +77,11 @@ Server::Server()
     setlocale(LC_ALL, "RU");
     m_logger = new Logger();
 
+    m_packetmng = new PacketManager(this);
     m_window = new RenderWindow();
 
-    m_window->create(sf::VideoMode(800, 500), "", sf::Style::Titlebar | sf::Style::Close);
-    m_window->setFramerateLimit(144);
+    m_window->create(sf::VideoMode(800, 500), "", sf::Style::Resize | sf::Style::Titlebar | sf::Style::Close);
+    m_window->setFramerateLimit(50);
 
     ImGui::SFML::Init(*m_window);
 
@@ -99,7 +92,7 @@ Server::Server()
 }
 
 void Server::addPlayer(TcpSocket* sock) {
-    std::lock_guard lock(players_mutex);
+    std::lock_guard<std::mutex> lock(players_internal_mutex);
 
     Player* p = nullptr;
     size_t idx = 0;
@@ -129,8 +122,13 @@ void Server::addPlayer(TcpSocket* sock) {
     } 
 }
 
+void Server::ping_player(size_t idx)
+{
+    std::lock_guard<std::mutex> lock(players_internal_mutex);
+
+}
 void Server::disconnect_player(Player* p) {
-    std::lock_guard lock(players_mutex);
+    std::lock_guard<std::mutex> lock(players_internal_mutex);
 
     std::deque<Player*>::iterator itr;
     
@@ -149,7 +147,7 @@ void Server::disconnect_player(Player* p) {
     }
 }
 void Server::disconnect_player(size_t idx) {
-    std::lock_guard lock(players_mutex);
+    std::lock_guard<std::mutex> lock(players_internal_mutex);
 
     // Индекс не может быть больше чем кол-во игроков
     if (idx > m_players.size()) {
@@ -176,8 +174,7 @@ int Server::run() {
     for (int i = 0; i < SERVER_PROCESS_THREADS_COUNT; i++) {
         m_threads.push_back(new std::thread(&Server::thread_process, this, i));
     }
-
-
+    
     if(m_threads.size() > 0) getLogger()->info(L"Server started!");
 
     // Запуск обработки UI

@@ -14,9 +14,9 @@
 
 class Game {
 private:
-	Logger* m_logger;
-	ImGuiIO* m_io;
-	RenderWindow* m_window;
+	Logger* m_logger			= nullptr;
+	ImGuiIO* m_io				= nullptr;
+	RenderWindow* m_window		= nullptr;
 	NetworkManager* m_netmg		= nullptr;
 	SceneManager* m_scenemg		= nullptr;
 	TextureManager* m_texturemg = nullptr;

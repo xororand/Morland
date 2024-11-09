@@ -2,6 +2,7 @@
 
 #include <string>
 
+#define to_ancii(x) Utils::encoding::to_utf8(x).c_str()
 
 namespace Utils
 {

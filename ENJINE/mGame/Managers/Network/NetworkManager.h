@@ -1,6 +1,7 @@
 #pragma once
 
 #include "defines.h"
+#include "mServer/defines.h"
 #include "Utils/Logger/Logger.h"
 
 class Game;

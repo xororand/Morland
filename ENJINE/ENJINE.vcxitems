@@ -16,11 +16,12 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Component\Component.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Component\HealthComponent.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Player.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Player\Player.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Game.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Texture\TextureManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\defines.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\servUI.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\ServUI\servUI.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Managers\PacketManager\PacketManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Logger\Logger.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Network\NetworkManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Scene\SceneManager.h" />
@@ -38,10 +39,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)version.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Player.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Player\Player.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Game.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Managers\Texture\TextureManager.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\servUI.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\ServUI\servUI.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Managers\PacketManager\PacketManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utils\Logger\Logger.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Managers\Network\NetworkManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Managers\Scene\Scene.cpp" />

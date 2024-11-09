@@ -37,8 +37,12 @@ void LauncherScene::onProcess() {
 			delete t_connect_serv; 
 		}	// Îñâîáîæäàåì ïîòîê èç ïàìÿòè
 
-		getGame()->getSceneManager()->setScene(Scene::WorldScene);
-		getGame()->getSceneManager()->setSceneName(L"Morland");
+		// ÓÁĞÀÒÜ ÏÎÑËÅ ÒÅÑÒÎÂ!!!!
+		nm->set_status(NetworkManager::None);
+		// ÓÁĞÀÒÜ ÏÎÑËÅ ÒÅÑÒÎÂ!!!!
+
+		//getGame()->getSceneManager()->setScene(Scene::WorldScene);
+		//getGame()->getSceneManager()->setSceneName(L"Morland");
 		return;
 	} 
 	if(nm->get_status() == NetworkManager::connection_failed) {

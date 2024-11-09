@@ -1,9 +1,14 @@
 #pragma once
+#include "SFML/Graphics.hpp"
+#include <imgui-SFML.h>
+#include <imgui.h>
+
+#include "Managers/PacketManager/PacketManager.h"
 #include "mServer/defines.h"
 #include "mGame/Managers/Network/defines.h"
 #include "Utils/Logger/Logger.h"
-#include "servUI.h"
-#include "Player.h"
+#include "servUI/servUI.h"
+#include "Player/Player.h"
 #include "version.h"
 
 #include "windows.h"
@@ -11,11 +16,8 @@
 #include <thread>
 #include <deque>
 #include <vector>
-#include "SFML/Graphics.hpp"
-#include <imgui-SFML.h>
-#include <imgui.h>
-
 #include <functional>
+
 
 
 class Server
@@ -29,7 +31,9 @@ public:
 		float m_current_tps = 0.0;
 	};
 private:
-	RenderWindow* m_window = nullptr;
+	PacketManager* m_packetmng	= nullptr;
+	RenderWindow* m_window		= nullptr;
+
 	sf::Clock clock;
 	sf::Clock deltaClock;
 	
@@ -47,9 +51,9 @@ private:
 	debug_stats* d_stats;
 
 	// MUTEXES
-	Mutex tps_mutex;
-	Mutex players_mutex;
-	Mutex draw_mutex;
+	std::mutex tps_mutex;
+	std::mutex players_mutex;
+	std::mutex players_internal_mutex;
 private:
 	void accept_new_connections();
 	void process_connections();
@@ -60,16 +64,20 @@ private:
 	void thread_process(int id);
 public:
 	Server();
+	int run();
 
 	void addPlayer(TcpSocket* sock);
 
+	void ping_player(size_t idx);
 	void disconnect_player(Player* p);
 	void disconnect_player(size_t idx);
+	
+	Logger* getLogger()					{ return m_logger; }
+	PacketManager* getPacketManager()	{ return m_packetmng; }
+	RenderWindow* getRenderWindow()		{ return m_window; }
 
-	Logger* getLogger()				{ return m_logger; }
-	float getCurrentTPS()			{ return d_stats->m_current_tps; }
-	debug_stats* getDebugStats()	{ return d_stats; }
-	RenderWindow* getRenderWindow() { return m_window; }
-	int run();
+	std::deque<Player*> getPlayers()	{ return m_players; }
+	float getCurrentTPS()				{ return d_stats->m_current_tps; }
+	debug_stats* getDebugStats()		{ return d_stats; }
 };
 
