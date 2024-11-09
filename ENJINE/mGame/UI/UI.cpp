@@ -24,7 +24,6 @@ UI::UI(Game* game) {
         m_settings::space_points[i].position = Vector2f(width, height);
     }
 }
-Game* UI::getGame() { return m_game; }
 
 void UI::drawVersion() {
     RenderWindow* rw = getGame()->getRenderWindow();

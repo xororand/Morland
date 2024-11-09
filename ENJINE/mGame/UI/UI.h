@@ -1,7 +1,8 @@
 #pragma once
+
+#include "SFML/Graphics.hpp"
 #include "imgui.h"
 #include "imgui-SFML.h"
-#include "SFML/Graphics.hpp"
 
 #include <format>
 
@@ -28,7 +29,7 @@ private:
 	Vector2f toview_center = Vector2f(0.0f, 0.0f);
 public:
     UI(Game* game);
-    Game* getGame();
+	Game* getGame() { return m_game; }
 	
     void drawVersion();
 	void drawBackgroundSpaceCircleEffect(float deltatime);

@@ -1,7 +1,6 @@
 #include "Server.h"
 
-void Server::accept_new_connections()
-{
+void Server::accept_new_connections() {
     TcpSocket* sock = new TcpSocket();
     Socket::Status status = m_tcp_listener.accept(*sock);
 
@@ -11,9 +10,9 @@ void Server::accept_new_connections()
     }
     delete sock;
 }
-
 void Server::process_connections() {
-    sf::Lock Lock(players_mutex);
+    std::lock_guard lock(players_mutex);
+
     for (auto p : m_players) {
         if (p == nullptr) continue;
         if (p->getStatus() == Player::status::disconnected) {
@@ -25,44 +24,82 @@ void Server::process_connections() {
     }
 }
 
+void Server::drawUI()
+{
+    // Draw
+    while (m_window->isOpen())
+    {
+        ImGui::SFML::Update(*getRenderWindow(), deltaClock.restart());
+        getRenderWindow()->clear();
+
+        ui->drawDebug();
+
+        ImGui::SFML::Render(*getRenderWindow());
+        getRenderWindow()->display();
+
+        // Events
+        sf::Event event;
+        while (getRenderWindow()->pollEvent(event))
+        {
+            ImGui::SFML::ProcessEvent(*getRenderWindow(), event);
+            if (event.type == sf::Event::Closed)
+                getRenderWindow()->close();
+        }
+    }
+
+    ImGui::SFML::Shutdown();
+}
+
 void Server::tick()
 {
-    //getLogger().info(std::format(L"TPS: {}", getCurrentTPS()).c_str());
     accept_new_connections();
     process_connections();
 }
 
-void Server::thread_process_socket() {
+void Server::thread_process(int id) {
+    
     while (is_run) {
-        tps_mutex.lock();
-        float TFLT = m_tps_timer.getElapsedTime().asSeconds();     
-        float tps_treshold = (float)(1.0 / MAX_TPS);
+        std::lock_guard lock(tps_mutex);
+
+        float TFLT = d_stats->m_tps_timer.getElapsedTime().asSeconds();
 
         if (TFLT < tps_treshold) {
-            long long slt = (long long)((tps_treshold - TFLT) * 100);
+            float slt = ( (tps_treshold - TFLT)) * 1000;
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(slt));
-
-            tps_mutex.unlock();
+            std::this_thread::sleep_until(
+                std::chrono::steady_clock::now() + std::chrono::milliseconds((long long)slt)
+            );
             continue;
         }
 
-        m_tps_timer.restart();
-        m_current_tps = 1.0 / TFLT;
-        tps_mutex.unlock();
-
+        TFLT = d_stats->m_tps_timer.restart().asSeconds();
+        d_stats->m_current_tps = 1.0 / TFLT;
+        
+        getLogger()->info( std::format(L"TPS: {} \t|\t idthr #{}", d_stats->m_current_tps, id).c_str() );
         tick(); // Обрабатываем 1 ТИК
     }
 }
 
 Server::Server()
 {
+    setlocale(LC_ALL, "RU");
     m_logger = new Logger();
+
+    m_window = new RenderWindow();
+
+    m_window->create(sf::VideoMode(800, 500), "", sf::Style::Titlebar | sf::Style::Close);
+    m_window->setFramerateLimit(144);
+
+    ImGui::SFML::Init(*m_window);
+
+    ui = new servUI(this);
+
+    d_stats = new debug_stats;
+    for (int i = 0; i < 500; i++) d_stats->tps_samples[i] = 0.0f;
 }
 
-void Server::addPlayer(TcpSocket* sock)
-{
-    sf::Lock Lock(players_mutex);
+void Server::addPlayer(TcpSocket* sock) {
+    std::lock_guard lock(players_mutex);
 
     Player* p = nullptr;
     size_t idx = 0;
@@ -91,9 +128,10 @@ void Server::addPlayer(TcpSocket* sock)
         m_players[idx] = p;
     } 
 }
-void Server::disconnect_player(Player* p)
-{
-    sf::Lock Lock(players_mutex);
+
+void Server::disconnect_player(Player* p) {
+    std::lock_guard lock(players_mutex);
+
     std::deque<Player*>::iterator itr;
     
     itr = std::find(m_players.begin(), m_players.end(), p);
@@ -111,7 +149,8 @@ void Server::disconnect_player(Player* p)
     }
 }
 void Server::disconnect_player(size_t idx) {
-    sf::Lock Lock(players_mutex);
+    std::lock_guard lock(players_mutex);
+
     // Индекс не может быть больше чем кол-во игроков
     if (idx > m_players.size()) {
         return; 
@@ -126,21 +165,25 @@ void Server::disconnect_player(size_t idx) {
     delete m_players[idx];
     m_players[idx] = nullptr;
 }
+
 int Server::run() {
     getLogger()->info(L"Starting server...");
 
     if (m_tcp_listener.listen(SERVER_DEF_PORT) != sf::Socket::Done)	getLogger()->exit_error(L"Listening TCP port error!\n");
     m_tcp_listener.setBlocking(false);
     
+    // Запуск поток логики сервера
     for (int i = 0; i < SERVER_PROCESS_THREADS_COUNT; i++) {
-        m_threads.push_back(new Thread(&Server::thread_process_socket, this));
+        m_threads.push_back(new std::thread(&Server::thread_process, this, i));
     }
+
 
     if(m_threads.size() > 0) getLogger()->info(L"Server started!");
 
-    for (auto& t : m_threads) t->launch();          // Запуск потоков
+    // Запуск обработки UI
+    drawUI();
 
-    for (auto& t : m_threads) t->wait();            // Ждем окончания работы потоков
+    for (auto& t : m_threads) t->join();            // Ждем окончания работы потоков
 
     for (auto p : m_players) disconnect_player(p);  // Отключаем каждого игрока
 

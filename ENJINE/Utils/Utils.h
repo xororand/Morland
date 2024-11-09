@@ -1,5 +1,7 @@
 #pragma once
+
 #include <string>
+
 
 namespace Utils
 {
@@ -11,5 +13,11 @@ namespace Utils
 		std::string replace(std::string s, char c1, char c2);
 		std::wstring replace(std::wstring s, char c1, char c2);
 	}
+	//struct computer {
+	//	static std::string getCpu();
+	//	static std::wstring getGpu();
+	//	static void getRAM(DWORD& max, DWORD& used);
+	//	static void getDesktopResolution(int& screen_weight, int& screen_height);
+	//};
 };
 

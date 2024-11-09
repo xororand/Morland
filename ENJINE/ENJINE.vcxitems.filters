@@ -33,6 +33,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Managers\Texture\TextureManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Player.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utils\vmath\vmath.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\servUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Logger\Logger.h">
@@ -58,5 +59,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Player.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\vmath\vmath.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)version.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\servUI.h" />
   </ItemGroup>
 </Project>

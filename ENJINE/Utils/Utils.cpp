@@ -1,10 +1,10 @@
-#include "Utils.h"
+﻿#include "Utils.h"
+
 #include "intrin.h"
-#include "Windows.h"
+#include <Windows.h>
 #include "stringapiset.h"
 #include <codecvt>
-
-
+// ==================== ENCODING ====================
 std::string Utils::encoding::to_utf8(const std::wstring& wstr)
 {
     if (wstr.empty()) return std::string();
@@ -22,8 +22,9 @@ std::wstring Utils::encoding::to_wide(const std::string& str)
     return wstrTo;
 }
 
-std::string Utils::string::replace(std::string s,
-    char c1, char c2)
+
+// ==================== STRINGS ====================
+std::string Utils::string::replace(  std::string s,  char c1, char c2)
 {
     int l = s.length();
 
@@ -40,8 +41,7 @@ std::string Utils::string::replace(std::string s,
     }
     return s;
 }
-std::wstring Utils::string::replace(std::wstring s,
-    char c1, char c2)
+std::wstring Utils::string::replace( std::wstring s, char c1, char c2)
 {
     int l = s.length();
 
@@ -54,3 +54,60 @@ std::wstring Utils::string::replace(std::wstring s,
     }
     return s;
 }
+
+
+// ==================== COMPUTER ====================
+//std::string Utils::computer::getCpu() {
+//    try
+//    {
+//        int CPUInfo[4] = { -1 };
+//        __cpuid(CPUInfo, 0x80000000);
+//        unsigned int nExIds = CPUInfo[0];
+//
+//        char CPUBrandString[0x40] = { 0 };
+//        for (unsigned int i = 0x80000000; i <= nExIds; ++i)
+//        {
+//            __cpuid(CPUInfo, i);
+//            if (i == 0x80000002)
+//            {
+//                memcpy(CPUBrandString,
+//                    CPUInfo,
+//                    sizeof(CPUInfo));
+//            }
+//            else if (i == 0x80000003)
+//            {
+//                memcpy(CPUBrandString + 16,
+//                    CPUInfo,
+//                    sizeof(CPUInfo));
+//            }
+//            else if (i == 0x80000004)
+//            {
+//                memcpy(CPUBrandString + 32, CPUInfo, sizeof(CPUInfo));
+//            }
+//        }
+//
+//        return CPUBrandString;
+//    }
+//    catch (...) { return "NONE"; }
+//}
+//std::wstring Utils::computer::getGpu() {
+//    DISPLAY_DEVICE dd = { sizeof(dd), 0 };
+//    BOOL f = EnumDisplayDevicesW(NULL, 0, &dd, EDD_GET_DEVICE_INTERFACE_NAME);
+//    return dd.DeviceString;
+//}
+//void Utils::computer::getRAM(DWORD& max, DWORD& used) {
+//    MEMORYSTATUSEX memoryStatus;
+//    memoryStatus.dwLength = sizeof(memoryStatus);
+//    GlobalMemoryStatusEx(&memoryStatus);
+//    max = memoryStatus.ullTotalPhys / 1024 / 1024;
+//    used = memoryStatus.dwMemoryLoad; // çàãðóæåííîñòü ÎÏ
+//}
+//void Utils::computer::getDesktopResolution(int& screen_weight, int& screen_height) {
+//    RECT desktop;
+//    const HWND hDesktop = GetDesktopWindow();
+//
+//    GetWindowRect(hDesktop, &desktop);
+//
+//    screen_weight = desktop.right;
+//    screen_height = desktop.bottom;
+//}

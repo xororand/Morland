@@ -20,6 +20,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Game.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Texture\TextureManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\defines.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\servUI.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Logger\Logger.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Network\NetworkManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Scene\SceneManager.h" />
@@ -40,6 +41,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Player.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Game.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Managers\Texture\TextureManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\servUI.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utils\Logger\Logger.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Managers\Network\NetworkManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Managers\Scene\Scene.cpp" />
