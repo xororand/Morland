@@ -27,7 +27,10 @@ void Server::drawUI()
         ImGui::SFML::Update(*getRenderWindow(), deltaClock.restart());
         getRenderWindow()->clear();
 
-        ui->drawDebug();
+        {
+            std::lock_guard<std::mutex> lock(players_mutex);
+            ui->drawDebug();
+        }
 
         ImGui::SFML::Render(*getRenderWindow());
         getRenderWindow()->display();
@@ -65,10 +68,11 @@ void Server::thread_process(int id) {
             continue;
         }
 
-        TFLT = d_stats->m_tps_timer.restart().asSeconds();
+        //TFLT = d_stats->m_tps_timer.restart().asSeconds();
         d_stats->m_current_tps = 1.0 / TFLT;
         
         tick(); // Обрабатываем 1 ТИК
+        d_stats->m_tps_timer.restart();
     }
 }
 
@@ -111,7 +115,7 @@ void Server::addPlayer(TcpSocket* sock) {
         if (m_players.size() == 0)
             idx = 0;
         else
-            idx = m_players.size() + 1;
+            idx = m_players.size();
 
         p = new Player(idx, this, sock);
         m_players.push_back(p); 
@@ -125,7 +129,7 @@ void Server::addPlayer(TcpSocket* sock) {
 void Server::ping_player(size_t idx)
 {
     std::lock_guard<std::mutex> lock(players_internal_mutex);
-
+    // TODO: PING PLAYER, IF NOT RESPONDE = DISCONNECT
 }
 void Server::disconnect_player(Player* p) {
     std::lock_guard<std::mutex> lock(players_internal_mutex);
@@ -147,31 +151,36 @@ void Server::disconnect_player(Player* p) {
     }
 }
 void Server::disconnect_player(size_t idx) {
-    std::lock_guard<std::mutex> lock(players_internal_mutex);
-
     // Индекс не может быть больше чем кол-во игроков
-    if (idx > m_players.size()) {
-        return; 
-    }
-    Player* p = m_players[idx];
+    if (idx > getPlayers().size()) return;
+
+    if (m_players[idx] == NULL) return;
 
     getLogger()->info(std::format(L"[p-] {}:{} disconnected",
-        Utils::encoding::to_wide(p->getTcp()->getRemoteAddress().toString()),
-        p->getTcp()->getRemotePort()
+        Utils::encoding::to_wide(m_players[idx]->getTcp()->getRemoteAddress().toString()),
+        m_players[idx]->getTcp()->getRemotePort()
     ).c_str());
 
     delete m_players[idx];
     m_players[idx] = nullptr;
 }
 
-int Server::run() {
+std::deque<Player*> Server::getPlayers()
+{
+    std::lock_guard<std::mutex> lock(players_internal_mutex);
+    return m_players;
+}
+
+int Server::run(int ticksPerSecond) {
     getLogger()->info(L"Starting server...");
+
+    tickInterval = std::chrono::milliseconds(1000 / ticksPerSecond);
 
     if (m_tcp_listener.listen(SERVER_DEF_PORT) != sf::Socket::Done)	getLogger()->exit_error(L"Listening TCP port error!\n");
     m_tcp_listener.setBlocking(false);
     
     // Запуск поток логики сервера
-    for (int i = 0; i < SERVER_PROCESS_THREADS_COUNT; i++) {
+    for (int i = 0; i < SERVER_PROCESS_THREADS_COUNT * 4; i++) {
         m_threads.push_back(new std::thread(&Server::thread_process, this, i));
     }
     

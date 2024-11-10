@@ -6,10 +6,12 @@ Player::Player(size_t idx, Server* ptr_serv, TcpSocket* tcp) {
 
 	time(&first_connect_t);
 	time(&last_packet_t);
+	last_ping_ms = std::chrono::system_clock::now();
 
 	m_server = ptr_serv;
 	m_tcp = tcp;
-	
+	m_tcp->setBlocking(false);
+
 	setStatus(status::not_verifed);
 
 	getServer()->getLogger()->info(std::format(L"[p+] {}:{} New connection...", 
@@ -27,7 +29,9 @@ void Player::process() {
 
 	time_t timeout = time(0) - last_packet_t;
 	// “¿…Ã¿”“ »—“≈ 
-	if (timeout > MAX_PLAYER_TIMEOUT) setStatus(status::disconnected); 
+	if (timeout > MAX_PLAYER_TIMEOUT)	setStatus(status::disconnected); 
+	// —À»ÿ ŒÃ ¡ŒÀ‹ÿŒ… œ»Õ√
+	if(ping_ms >= MAX_PLAYER_PING)		setStatus(status::disconnected);
 	// —À»ÿ ŒÃ ¡ŒÀ‹ÿŒ… “¿…Ã¿”“ œ¿ ≈“Œ¬ - Õ¿◊»Õ¿≈Ã Œ“œ–¿¬ ” œ»Õ√¿
 	if (timeout >= MAX_PLAYER_TIMEOUT / 2) serv->ping_player(this->getID()); 
 	// Œ“ Àﬁ◊¿≈Ã œŒ œ–»◊»Õ≈ ¬€—Œ Œ√Œ “¿…Ã¿”“¿ œ¿ ≈“Œ¬
@@ -38,13 +42,16 @@ void Player::process() {
 
 	// œ–»Õ»Ã¿≈Ã œ¿ ≈“€
 	Packet p;
-	Socket::Status status = getTcp()->receive(p);
+	Socket::Status tcp_status = getTcp()->receive(p);
 
 	// Œ“œ–¿¬Àﬂ≈Ã œ¿ ≈“ ¬ Ã≈Õ≈ƒ∆≈– œ¿ ≈“Œ¬
-	if (status == Socket::Status::Done) { 
+	if (tcp_status == Socket::Status::Done) {
 		last_packet_t = time(0);
-		serv->getPacketManager()->process_packet(this, p); 
+		serv->getPacketManager()->process_packet(this, p.getData(), p.getDataSize()); 
 	}
+
+	// –¿—◊≈“ œ»Õ√¿
+	ping_ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - getLastPing_tp()).count();
 }
 
 std::wstring Player::to_wstring(status s)

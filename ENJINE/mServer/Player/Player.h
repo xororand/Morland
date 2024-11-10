@@ -3,6 +3,8 @@
 #include "mGame/Managers/Network/defines.h"
 #include "Utils/Utils.h"
 
+#include <chrono>
+
 class Server;
 
 class Player
@@ -29,8 +31,8 @@ private:
 
 	time_t first_connect_t;
 	time_t last_packet_t;
-	std::chrono::milliseconds last_ping_ms;
-	std::chrono::milliseconds ping_ms;
+	std::chrono::system_clock::time_point last_ping_ms;
+	long long ping_ms;
 
 	status m_status = not_verifed;
 private:
@@ -42,6 +44,11 @@ public:
 	void process();
 
 	static std::wstring to_wstring(status s);
+
+	std::chrono::system_clock::time_point getLastPing_tp()			{ return last_ping_ms; }
+	void setLastPing_tp(std::chrono::system_clock::time_point tp)			{ last_ping_ms = tp; }
+
+	long long getPingMS()											{ return ping_ms; }
 
 	Server* getServer() { return m_server; }
 	TcpSocket* getTcp() { return m_tcp; }

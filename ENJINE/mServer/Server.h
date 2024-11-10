@@ -34,6 +34,7 @@ private:
 	PacketManager* m_packetmng	= nullptr;
 	RenderWindow* m_window		= nullptr;
 
+	std::chrono::milliseconds tickInterval;
 	sf::Clock clock;
 	sf::Clock deltaClock;
 	
@@ -64,7 +65,7 @@ private:
 	void thread_process(int id);
 public:
 	Server();
-	int run();
+	int run(int ticksPerSecond);
 
 	void addPlayer(TcpSocket* sock);
 
@@ -76,7 +77,7 @@ public:
 	PacketManager* getPacketManager()	{ return m_packetmng; }
 	RenderWindow* getRenderWindow()		{ return m_window; }
 
-	std::deque<Player*> getPlayers()	{ return m_players; }
+	std::deque<Player*> getPlayers();
 	float getCurrentTPS()				{ return d_stats->m_current_tps; }
 	debug_stats* getDebugStats()		{ return d_stats; }
 };

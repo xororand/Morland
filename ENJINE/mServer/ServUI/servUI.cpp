@@ -1,5 +1,6 @@
 ﻿#include "servUI.h"
 #include "../Server.h"
+#include "mGame/UI/UI.h"
 
 servUI::servUI(Server* serv)
 {
@@ -12,6 +13,7 @@ Server* servUI::getServer()
 }
 
 void servUI::drawDebug() {
+
     // ДЕБАГ ПАРАМЕТРОВ СЕРВЕРА
     ImGuiWindowFlags style1 = ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDecoration;
     if(ImGui::Begin(to_ancii(L"ПАРАМЕТРЫ СЕРВЕРА"), NULL, style1)) {
@@ -64,37 +66,56 @@ void servUI::drawDebug() {
     }
     
     // ДЕБАГ ИГРОКОВ
-    if(ImGui::Begin(to_ancii(L"ИГРОКИ"), NULL)){
+    if(ImGui::Begin(to_ancii(L"PLAYERS"), NULL)){
         // ID | STATUS | IP:PORT
         std::vector<std::wstring> cols_names {
             L"ID",
+            L"PING",
             L"STATUS",
             L"IP:PORT"
         };
 
         std::deque<Player*> players = getServer()->getPlayers();
 
-        if (ImGui::BeginTable(to_ancii(L"ИГРОКИ_таблица"), cols_names.size()))
+        if (ImGui::BeginTable(to_ancii(L"PLAYERS table"), cols_names.size()))
         {
+            
+            for (int col = 0; col < cols_names.size(); col++)
+            {
+                ImGui::TableSetupColumn(to_ancii(cols_names[col]), ImGuiTableColumnFlags_WidthStretch, 0.0f, col / static_cast<float>(cols_names.size()));
+            }
+            ImGui::TableHeadersRow();
             for (int row = 0; row < players.size(); row++)
             {
-                if (players[row] == NULL) continue; // пропуск пустых ячеек, освобожденных после выхода игроков
+                Player* pl = players[row];
+                if (pl == NULL) continue; // пропуск пустых ячеек, освобожденных после выхода игроков
 
                 ImGui::TableNextRow();
 
                 ImGui::TableSetColumnIndex(0);
-                ImGui::Text("%d", players[row]->getID());
+                
+                ImGui::Text("%d", pl->getID());
 
                 ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%s", to_ancii(Player::to_wstring(players[row]->getStatus())) );
+                ImGui::Text("%dms", pl->getPingMS());
 
-                TcpSocket* tcp = players[row]->getTcp();
                 ImGui::TableSetColumnIndex(2);
+                ImGui::Text("%s", to_ancii(Player::to_wstring(pl->getStatus())) );
+
+                TcpSocket* tcp = pl->getTcp();
+                ImGui::TableSetColumnIndex(3);
                 ImGui::Text("%s:%d", tcp->getRemoteAddress().toString().c_str(), tcp->getLocalPort());
             }
             ImGui::EndTable();
         }
 
+        ImGui::End();
+    }
+
+    if(ImGui::Begin("credits", NULL, style1)) {
+        RenderWindow* rw = getServer()->getRenderWindow();
+        ImGui::SetWindowPos(ImVec2(0, rw->getSize().y - ImGui::GetWindowHeight()));
+        ImGui::Text("ver%i.%i.%i%s", MAJOR_VER, MINOR_VER, PATCH_VER, DEFICE);
         ImGui::End();
     }
 }
