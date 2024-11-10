@@ -131,34 +131,16 @@ void Server::ping_player(size_t idx)
     std::lock_guard<std::mutex> lock(players_internal_mutex);
     // TODO: PING PLAYER, IF NOT RESPONDE = DISCONNECT
 }
-void Server::disconnect_player(Player* p) {
-    std::lock_guard<std::mutex> lock(players_internal_mutex);
-
-    std::deque<Player*>::iterator itr;
-    
-    itr = std::find(m_players.begin(), m_players.end(), p);
-    if (itr != m_players.end()) {
-        auto idx = std::distance(m_players.begin(), itr);
-
-        Player* p = m_players[idx];
-
-        getLogger()->info(std::format(L"[p-] {}:{} disconnected",
-            Utils::encoding::to_wide(p->getTcp()->getRemoteAddress().toString()),
-            p->getTcp()->getRemotePort()
-        ).c_str());
-
-        delete m_players[idx];
-    }
-}
 void Server::disconnect_player(size_t idx) {
     // Индекс не может быть больше чем кол-во игроков
     if (idx > getPlayers().size()) return;
 
     if (m_players[idx] == NULL) return;
 
-    getLogger()->info(std::format(L"[p-] {}:{} disconnected",
+    getLogger()->info(std::format(L"[p-] {}:{} disconnected by {}",
         Utils::encoding::to_wide(m_players[idx]->getTcp()->getRemoteAddress().toString()),
-        m_players[idx]->getTcp()->getRemotePort()
+        m_players[idx]->getTcp()->getRemotePort(),
+        m_players[idx]->getDisconnectReason()
     ).c_str());
 
     delete m_players[idx];
@@ -191,7 +173,7 @@ int Server::run(int ticksPerSecond) {
 
     for (auto& t : m_threads) t->join();            // Ждем окончания работы потоков
 
-    for (auto p : m_players) disconnect_player(p);  // Отключаем каждого игрока
+    for (auto p : m_players) disconnect_player(p->getID());  // Отключаем каждого игрока
 
     return 0;
 }

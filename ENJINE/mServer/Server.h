@@ -70,7 +70,6 @@ public:
 	void addPlayer(TcpSocket* sock);
 
 	void ping_player(size_t idx);
-	void disconnect_player(Player* p);
 	void disconnect_player(size_t idx);
 	
 	Logger* getLogger()					{ return m_logger; }

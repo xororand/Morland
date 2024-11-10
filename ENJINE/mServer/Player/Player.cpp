@@ -29,9 +29,9 @@ void Player::process() {
 
 	time_t timeout = time(0) - last_packet_t;
 	// рюилюср хярей
-	if (timeout > MAX_PLAYER_TIMEOUT)	setStatus(status::disconnected); 
+	if (timeout > MAX_PLAYER_TIMEOUT)	{ disconnect_reason = L"TIMEOUT"; setStatus(status::disconnected); }
 	// якхьйнл анкэьни охмц
-	if(ping_ms >= MAX_PLAYER_PING)		setStatus(status::disconnected);
+	if(ping_ms >= MAX_PLAYER_PING)		{ disconnect_reason = L"HIGH PING"; setStatus(status::disconnected); }
 	// якхьйнл анкэьни рюилюср оюйернб - мювхмюел нропюбйс охмцю
 	if (timeout >= MAX_PLAYER_TIMEOUT / 2) serv->ping_player(this->getID()); 
 	// нрйкчвюел он опхвхме бшянйнцн рюилюсрю оюйернб

@@ -35,6 +35,7 @@ private:
 	long long ping_ms;
 
 	status m_status = not_verifed;
+	std::wstring disconnect_reason = L"Unknown";
 private:
 	void setStatus(status s) { m_status = s; }
 public:
@@ -42,6 +43,7 @@ public:
 	~Player();
 
 	void process();
+	Server* getServer() { return m_server; }
 
 	static std::wstring to_wstring(status s);
 
@@ -49,10 +51,10 @@ public:
 	void setLastPing_tp(std::chrono::system_clock::time_point tp)			{ last_ping_ms = tp; }
 
 	long long getPingMS()											{ return ping_ms; }
-
-	Server* getServer() { return m_server; }
-	TcpSocket* getTcp() { return m_tcp; }
-	status getStatus()	{ return m_status; }
-	size_t getID()		{ return idx; }
+	
+	TcpSocket*		getTcp()				{ return m_tcp; }
+	status			getStatus()				{ return m_status; }
+	std::wstring	getDisconnectReason()	{ return disconnect_reason; }
+	size_t			getID()					{ return idx; }
 };
 
