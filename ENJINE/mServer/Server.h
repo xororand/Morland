@@ -31,24 +31,21 @@ public:
 		float m_current_tps = 0.0;
 	};
 private:
+	servUI* ui					= nullptr;
+	Logger* m_logger			= nullptr;;
 	PacketManager* m_packetmng	= nullptr;
 	RenderWindow* m_window		= nullptr;
 
-	std::chrono::milliseconds tickInterval;
-	sf::Clock clock;
 	sf::Clock deltaClock;
 	
 	float tps_treshold = (float)(1.0 / MAX_TPS);
 
-	servUI* ui = nullptr;
-
-	std::vector<std::thread*> m_threads;
 	bool is_run = true;
-
+	std::vector<std::thread*> m_threads;
+	
 	TcpListener m_tcp_listener;
 	std::deque<Player*> m_players;
 
-	Logger* m_logger;
 	debug_stats* d_stats;
 
 	// MUTEXES

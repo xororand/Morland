@@ -156,8 +156,6 @@ std::deque<Player*> Server::getPlayers()
 int Server::run(int ticksPerSecond) {
     getLogger()->info(L"Starting server...");
 
-    tickInterval = std::chrono::milliseconds(1000 / ticksPerSecond);
-
     if (m_tcp_listener.listen(SERVER_DEF_PORT) != sf::Socket::Done)	getLogger()->exit_error(L"Listening TCP port error!\n");
     m_tcp_listener.setBlocking(false);
     
