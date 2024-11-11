@@ -1,4 +1,5 @@
 #pragma once
+#include "enjPacket/enjPacket.h"
 
 #define SERVER_DEF_PORT 55055
 #define SERVER_PROCESS_THREADS_COUNT 4

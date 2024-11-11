@@ -35,6 +35,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Utils\vmath\vmath.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mServer\ServUI\servUI.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Managers\PacketManager\PacketManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)enjPacket\enjPacket.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Logger\Logger.h">
@@ -62,5 +63,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)version.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\ServUI\servUI.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Managers\PacketManager\PacketManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)enjPacket\enjPacket.h" />
   </ItemGroup>
 </Project>

@@ -55,9 +55,10 @@ public:
 	long long getPingMS()								{ return ping_ms; }
 	void setPingMS(long long ms)						{ ping_ms = ms; }
 	
-	TcpSocket*		getTcp()				{ return m_tcp; }
-	status			getStatus()				{ return m_status; }
-	std::wstring	getDisconnectReason()	{ return disconnect_reason; }
-	size_t			getID()					{ return idx; }
+	TcpSocket*		getTcp()								{ return m_tcp; }
+	status			getStatus()								{ return m_status; }
+	void			setDisconnectReason(std::wstring str)	{ disconnect_reason = str; }
+	std::wstring	getDisconnectReason()					{ return disconnect_reason; }
+	size_t			getID()									{ return idx; }
 };
 

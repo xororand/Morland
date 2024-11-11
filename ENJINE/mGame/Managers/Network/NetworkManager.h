@@ -32,9 +32,10 @@ public:
 	
 	void process();
 
-	void send_command(sf::Uint16 cid, ...);
-
+	void send_packet(enjPacket p);
 	void send_ping();
+
+	
 
 	TcpSocket* getTCP() { return m_tcp; }
 

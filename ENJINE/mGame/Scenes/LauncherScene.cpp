@@ -18,11 +18,16 @@ LauncherScene::LauncherScene(Game* game) {
 	
 	ui = std::make_shared<UI>( getGame() );
 
-	rw->create(sf::VideoMode(800, 500), "", sf::Style::Titlebar | sf::Style::Close);
-	rw->setFramerateLimit(144);
 	
-	
-	if(!getGame()->getSceneManager()->isRWinit()) ImGui::SFML::Init(*rw);
+	if (!getGame()->getSceneManager()->isRWinit()) {
+		getGame()->getSceneManager()->isRWinit(true);
+
+		rw->create(sf::VideoMode(800, 500), "", sf::Style::Titlebar | sf::Style::Close);
+		rw->setFramerateLimit(144);
+		rw->setVerticalSyncEnabled(true);
+
+		ImGui::SFML::Init(*rw);
+	}
 }
 
 void LauncherScene::onProcess() {

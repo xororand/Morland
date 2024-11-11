@@ -8,30 +8,24 @@ NetworkManager::NetworkManager(Game* game) {
 }
 void NetworkManager::process()
 {
+	// ÏĞÎÈÇÎØËÀ ÎØÈÁÊÀ ÑÎÅÄÈÍÅÍÈß - ÏÅĞÅÕÎÄÈÌ Â ÎÊÍÎ ÏÎÄÊËŞ×ÅÍÈß
+	if (getGame()->getSceneManager()->getCurrentScene()->getType() != Scene::LauncherScene and get_status() == connection_failed) {
+		getGame()->getSceneManager()->setScene(Scene::LauncherScene, L"Morland Launcher");
+	}
 	// ÅÑËÈ ÌÛ ÍÅ ÏÎÄÊËŞ×ÅÍÛ Ê ÑÅĞÂÅĞÓ - ÏĞÎÏÓÑÊ İÒÎÉ ÔÓÍÊÖÈÈ
 	if (get_status() != connection_done)	return;
-	// ÏĞÎÈÇÎØËÀ ÎØÈÁÊÀ ÑÎÅÄÈÍÅÍÈß - ÏÅĞÅÕÎÄÈÌ Â ÎÊÍÎ ÏÎÄÊËŞ×ÅÍÈß
-	if (get_status() != connection_failed)	getGame()->getSceneManager()->setScene(Scene::LauncherScene, L"Morland Launcher");
+
 
 	// ÎÒÏĞÀÂÊÀ ÏÈÍÃÀ ÍÀ ÑÅĞÂÅĞ ĞÀÇ Â TCP_C_PING_DELAY
-	if (duration_cast<std::chrono::milliseconds>(system_clock::now() - last_c_ping).count() >= TCP_C_PING_DELAY) this->send_ping();
+	if (duration_cast<std::chrono::milliseconds>(system_clock::now() - last_c_ping).count() >= TCP_C_PING_DELAY) 
+		this->send_ping();
 }
 
-void NetworkManager::send_command(sf::Uint16 cid, ...) {
-	Packet p;
-	p << (sf::Uint8)P_HEAD << (sf::Uint8)MAJOR_VER << (sf::Uint8)MINOR_VER << (sf::Uint8)PATCH_VER;
-	p << cid;
-	p << (sf::Uint8)P_END;
-}
-
-void NetworkManager::send_ping() {
-	last_c_ping = system_clock::now();
-
-	Packet p;
-	p << (sf::Uint8)P_HEAD << (sf::Uint8)MAJOR_VER << (sf::Uint8)MINOR_VER << (sf::Uint8)PATCH_VER;
-	p << (sf::Uint16)C_PING;
-	p << (sf::Uint8)P_END;
-	
+/*
+* Îòïğàâêà ïàêåòà ñ ïğîâåğêîé íà âàëèäíóş îòïğàâêó
+*/
+void NetworkManager::send_packet(enjPacket p)
+{
 	while (1) {
 		Socket::Status status = getTCP()->send(p);
 		if (status == Socket::Status::Done) return;
@@ -41,6 +35,14 @@ void NetworkManager::send_ping() {
 			return;
 		}
 	}
+}
+
+void NetworkManager::send_ping() {
+	last_c_ping = system_clock::now();
+
+	enjPacket p;
+	p << (sf::Uint16)C_PING;
+	send_packet(p);
 }
 void NetworkManager::set_connection_data(std::string ip, unsigned short port) {
 	last_ip = ip;

@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Network.hpp>
+#include "enjPacket/enjPacket.h"
 
 using namespace sf;
 

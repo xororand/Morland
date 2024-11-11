@@ -72,7 +72,8 @@ void servUI::drawDebug() {
             L"ID",
             L"PING",
             L"STATUS",
-            L"IP:PORT"
+            L"IP:PORT",
+            L""
         };
 
         std::deque<Player*> players = getServer()->getPlayers();
@@ -97,7 +98,7 @@ void servUI::drawDebug() {
                 ImGui::Text("%d", pl->getID());
 
                 ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%dms", pl->getPingMS());
+                ImGui::Text("%dms", pl->getPingMS() - (long long)TCP_C_PING_DELAY);
 
                 ImGui::TableSetColumnIndex(2);
                 ImGui::Text("%s", to_ancii(Player::to_wstring(pl->getStatus())) );
@@ -105,6 +106,12 @@ void servUI::drawDebug() {
                 TcpSocket* tcp = pl->getTcp();
                 ImGui::TableSetColumnIndex(3);
                 ImGui::Text("%s:%d", tcp->getRemoteAddress().toString().c_str(), tcp->getLocalPort());
+
+                ImGui::TableSetColumnIndex(4);
+                if (ImGui::Button("Disconnect")) {
+                    pl->setDisconnectReason(L"Admin");
+                    getServer()->disconnect_player(pl->getID());
+                }
             }
             ImGui::EndTable();
         }

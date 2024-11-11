@@ -25,6 +25,7 @@ void SceneManager::setScene(Scene* scene) {
 }
 void SceneManager::setScene(Scene::Type type, std::wstring name) {
 	// TODO: wait for overing scene
+	std::lock_guard lock(onswitchscene);
 	setScene(type);
 	setSceneName(name);
 }
@@ -35,5 +36,6 @@ void SceneManager::setSceneName(std::wstring name)
 }
 
 void SceneManager::processScene() {
+	std::lock_guard lock(onswitchscene);
 	m_current_scene->process();
 }

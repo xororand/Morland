@@ -44,7 +44,7 @@ int PacketManager::process_packet(Player* pl)
 	// ÈÃÐÎÊ ÍÅ ÑÓÙÅÑÒÂÓÅÒ
 	if (pl == NULL) return Socket::Status::Error;
 
-	Packet p;
+	enjPacket p;
 	Socket::Status tcp_status = pl->getTcp()->receive(p);
 	if (tcp_status != Socket::Status::Done) return tcp_status;
 	

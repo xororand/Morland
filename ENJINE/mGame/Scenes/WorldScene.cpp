@@ -8,16 +8,19 @@ WorldScene::WorldScene(Game* game) {
 	setGame(game);
 	
 	RenderWindow* rw = getGame()->getRenderWindow();
-	rw->setVerticalSyncEnabled(true);
+
 	m_root = RootObj();
 
 	ui = std::make_shared<UI>(getGame());
 	
-	// rw->create(sf::VideoMode::getDesktopMode(), "", sf::Style::Fullscreen);
-	rw->create(sf::VideoMode(800, 500), "", sf::Style::Titlebar | sf::Style::Close);
+	rw->create(sf::VideoMode(801, 501), "", sf::Style::Titlebar | sf::Style::Close);
 	rw->setFramerateLimit(144);
+	rw->setVerticalSyncEnabled(true);
 
-	if (!getGame()->getSceneManager()->isRWinit()) ImGui::SFML::Init(*rw);
+	if (!getGame()->getSceneManager()->isRWinit()) {
+		getGame()->getSceneManager()->isRWinit(true);
+		ImGui::SFML::Init(*rw);
+	}
 }
 
 void WorldScene::onProcess() {
