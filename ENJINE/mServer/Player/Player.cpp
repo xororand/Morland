@@ -41,9 +41,11 @@ void Player::process() {
 	}
 
 	// ÏÐÈÍÈÌÀÅÌ TCP ÏÀÊÅÒÛ
-	Socket::Status status = (Socket::Status)serv->getPacketManager()->process_packet(this);
+	Socket::Status tcp_status = (Socket::Status)serv->getPacketManager()->process_packet(this);
 
-	if (status == Socket::Status::Done) last_packet_t = time(0);
+	if (tcp_status == Socket::Status::Done) last_packet_t = time(0);
+	if (tcp_status == Socket::Status::Disconnected or tcp_status == Socket::Status::Error)
+	{ disconnect_reason = L"Receive TCP failed"; setStatus(status::disconnected); }
 
 
 }

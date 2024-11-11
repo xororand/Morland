@@ -128,7 +128,6 @@ void Server::addPlayer(TcpSocket* sock) {
 
 void Server::ping_player(size_t idx)
 {
-    std::lock_guard<std::mutex> lock(players_internal_mutex);
     // TODO: PING PLAYER, IF NOT RESPONDE = DISCONNECT
 }
 void Server::disconnect_player(size_t idx) {

@@ -9,15 +9,22 @@ NetworkManager::NetworkManager(Game* game) {
 void NetworkManager::process()
 {
 	// еякх лш ме ондйкчвемш й яепбепс - опносяй щрни тсмйжхх
-	if (get_status() != connection_done) return;
+	if (get_status() != connection_done)	return;
+	// опнхгнькю ньхайю янедхмемхъ - оепеундхл б нймн ондйкчвемхъ
+	if (get_status() != connection_failed)	getGame()->getSceneManager()->setScene(Scene::LauncherScene, L"Morland Launcher");
 
 	// нропюбйю охмцю мю яепбеп пюг б TCP_C_PING_DELAY
 	if (duration_cast<std::chrono::milliseconds>(system_clock::now() - last_c_ping).count() >= TCP_C_PING_DELAY) this->send_ping();
-		
-
 }
-void NetworkManager::send_ping()
-{
+
+void NetworkManager::send_command(sf::Uint16 cid, ...) {
+	Packet p;
+	p << (sf::Uint8)P_HEAD << (sf::Uint8)MAJOR_VER << (sf::Uint8)MINOR_VER << (sf::Uint8)PATCH_VER;
+	p << cid;
+	p << (sf::Uint8)P_END;
+}
+
+void NetworkManager::send_ping() {
 	last_c_ping = system_clock::now();
 
 	Packet p;
@@ -28,10 +35,9 @@ void NetworkManager::send_ping()
 	while (1) {
 		Socket::Status status = getTCP()->send(p);
 		if (status == Socket::Status::Done) return;
-		if (status == Socket::Status::Partial) { std::this_thread::sleep_for(std::chrono::milliseconds(1)); continue; }
-		if (status == Socket::Status::Disconnected or status == Socket::Error) {
+		else if (status == Socket::Status::Partial) { std::this_thread::sleep_for(std::chrono::milliseconds(1)); continue; }
+		else if (status == Socket::Status::Disconnected or status == Socket::Error) {
 			set_status(NetworkManager::Status::connection_failed);
-			getGame()->getSceneManager()->setScene(Scene::LauncherScene, L"Morland Launcher");
 			return;
 		}
 	}

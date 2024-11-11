@@ -32,6 +32,8 @@ public:
 	
 	void process();
 
+	void send_command(sf::Uint16 cid, ...);
+
 	void send_ping();
 
 	TcpSocket* getTCP() { return m_tcp; }
@@ -51,4 +53,3 @@ public:
 	void connect_server();
 
 };
-

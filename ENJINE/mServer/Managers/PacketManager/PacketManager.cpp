@@ -56,10 +56,10 @@ int PacketManager::process_packet(Player* pl)
 	sf::Uint8 minver;
 	sf::Uint8 pathver;
 	sf::Uint16 c_p;
+	// опнбепйю мю сдювмши оюпяхмц оюйерю
+	if( !(p >> h_b >> majver >> minver >> pathver >> c_p) ) return Socket::Status::Error;
 
-	p >> h_b >> majver >> minver >> pathver >> c_p;
-
-	// TODO: анкее кецйсч бша
+	// TODO: анкее сднамсч бшанпйс ЙНЛЮМДЮ = ТСМЙЖХЪ
 	switch (c_p) {
 	case C_PING: c_ping(pl, p.getData(), p.getDataSize()); break;
 	default:
