@@ -19,8 +19,7 @@ Game::Game() {
 
 	m_scenemg = new SceneManager(this);
 	{ // Установка начальной сцены
-		m_scenemg->setScene(Scene::LauncherScene);
-		m_scenemg->setSceneName(L"Morland Launcher");
+		m_scenemg->setScene(Scene::LauncherScene, L"Morland Launcher");
 	}
 
 	if (m_netmg && m_scenemg && m_texturemg)
@@ -69,6 +68,7 @@ int Game::run() {
 	{
 		// Процессим сцену
 		getSceneManager()->processScene();
+		getNetworkManager()->process();
 	}
 
 	ImGui::SFML::Shutdown();

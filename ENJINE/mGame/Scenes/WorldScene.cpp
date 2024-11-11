@@ -17,7 +17,7 @@ WorldScene::WorldScene(Game* game) {
 	rw->create(sf::VideoMode(800, 500), "", sf::Style::Titlebar | sf::Style::Close);
 	rw->setFramerateLimit(144);
 
-	//ImGui::SFML::Init(*rw);
+	if (!getGame()->getSceneManager()->isRWinit()) ImGui::SFML::Init(*rw);
 }
 
 void WorldScene::onProcess() {

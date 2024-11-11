@@ -3,8 +3,38 @@
 
 NetworkManager::NetworkManager(Game* game) {
 	m_game = game;
-
+	last_c_ping = system_clock::now();
 	getGame()->getLogger()->info(L"Èíèöèàëèçàöèÿ NetworkManager óñïåøíà.");
+}
+void NetworkManager::process()
+{
+	// ÅÑËÈ ÌÛ ÍÅ ÏÎÄÊËŞ×ÅÍÛ Ê ÑÅĞÂÅĞÓ - ÏĞÎÏÓÑÊ İÒÎÉ ÔÓÍÊÖÈÈ
+	if (get_status() != connection_done) return;
+
+	// ÎÒÏĞÀÂÊÀ ÏÈÍÃÀ ÍÀ ÑÅĞÂÅĞ ĞÀÇ Â TCP_C_PING_DELAY
+	if (duration_cast<std::chrono::milliseconds>(system_clock::now() - last_c_ping).count() >= TCP_C_PING_DELAY) this->send_ping();
+		
+
+}
+void NetworkManager::send_ping()
+{
+	last_c_ping = system_clock::now();
+
+	Packet p;
+	p << (sf::Uint8)P_HEAD << (sf::Uint8)MAJOR_VER << (sf::Uint8)MINOR_VER << (sf::Uint8)PATCH_VER;
+	p << (sf::Uint16)C_PING;
+	p << (sf::Uint8)P_END;
+	
+	while (1) {
+		Socket::Status status = getTCP()->send(p);
+		if (status == Socket::Status::Done) return;
+		if (status == Socket::Status::Partial) { std::this_thread::sleep_for(std::chrono::milliseconds(1)); continue; }
+		if (status == Socket::Status::Disconnected or status == Socket::Error) {
+			set_status(NetworkManager::Status::connection_failed);
+			getGame()->getSceneManager()->setScene(Scene::LauncherScene, L"Morland Launcher");
+			return;
+		}
+	}
 }
 void NetworkManager::set_connection_data(std::string ip, unsigned short port) {
 	last_ip = ip;

@@ -40,18 +40,12 @@ void Player::process() {
 		return;
 	}
 
-	// œ–»Õ»Ã¿≈Ã œ¿ ≈“€
-	Packet p;
-	Socket::Status tcp_status = getTcp()->receive(p);
+	// œ–»Õ»Ã¿≈Ã TCP œ¿ ≈“€
+	Socket::Status status = (Socket::Status)serv->getPacketManager()->process_packet(this);
 
-	// Œ“œ–¿¬Àﬂ≈Ã œ¿ ≈“ ¬ Ã≈Õ≈ƒ∆≈– œ¿ ≈“Œ¬
-	if (tcp_status == Socket::Status::Done) {
-		last_packet_t = time(0);
-		serv->getPacketManager()->process_packet(this, p.getData(), p.getDataSize()); 
-	}
+	if (status == Socket::Status::Done) last_packet_t = time(0);
 
-	// –¿—◊≈“ œ»Õ√¿
-	ping_ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - getLastPing_tp()).count();
+
 }
 
 std::wstring Player::to_wstring(status s)

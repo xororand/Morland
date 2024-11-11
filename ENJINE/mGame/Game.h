@@ -12,6 +12,8 @@
 
 #include <thread>
 
+using namespace std::chrono;
+
 class Game {
 private:
 	Logger* m_logger			= nullptr;

@@ -21,7 +21,8 @@ LauncherScene::LauncherScene(Game* game) {
 	rw->create(sf::VideoMode(800, 500), "", sf::Style::Titlebar | sf::Style::Close);
 	rw->setFramerateLimit(144);
 	
-	ImGui::SFML::Init(*rw);
+	
+	if(!getGame()->getSceneManager()->isRWinit()) ImGui::SFML::Init(*rw);
 }
 
 void LauncherScene::onProcess() {
@@ -37,12 +38,8 @@ void LauncherScene::onProcess() {
 			delete t_connect_serv; 
 		}	// Îñâîáîæäàåì ïîòîê èç ïàìÿòè
 
-		// ÓÁĞÀÒÜ ÏÎÑËÅ ÒÅÑÒÎÂ!!!!
-		nm->set_status(NetworkManager::None);
-		// ÓÁĞÀÒÜ ÏÎÑËÅ ÒÅÑÒÎÂ!!!!
-
-		//getGame()->getSceneManager()->setScene(Scene::WorldScene);
-		//getGame()->getSceneManager()->setSceneName(L"Morland");
+		getGame()->getSceneManager()->setScene(Scene::WorldScene);
+		getGame()->getSceneManager()->setSceneName(L"Morland");
 		return;
 	} 
 	if(nm->get_status() == NetworkManager::connection_failed) {

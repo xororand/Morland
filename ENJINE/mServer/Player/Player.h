@@ -5,6 +5,8 @@
 
 #include <chrono>
 
+using namespace std::chrono;
+
 class Server;
 
 class Player
@@ -31,7 +33,7 @@ private:
 
 	time_t first_connect_t;
 	time_t last_packet_t;
-	std::chrono::system_clock::time_point last_ping_ms;
+	system_clock::time_point last_ping_ms;
 	long long ping_ms;
 
 	status m_status = not_verifed;
@@ -47,10 +49,11 @@ public:
 
 	static std::wstring to_wstring(status s);
 
-	std::chrono::system_clock::time_point getLastPing_tp()			{ return last_ping_ms; }
-	void setLastPing_tp(std::chrono::system_clock::time_point tp)			{ last_ping_ms = tp; }
+	system_clock::time_point getLastPing_tp()			{ return last_ping_ms; }
+	void setLastPing_tp(system_clock::time_point tp)	{ last_ping_ms = tp; }
 
-	long long getPingMS()											{ return ping_ms; }
+	long long getPingMS()								{ return ping_ms; }
+	void setPingMS(long long ms)						{ ping_ms = ms; }
 	
 	TcpSocket*		getTcp()				{ return m_tcp; }
 	status			getStatus()				{ return m_status; }

@@ -14,16 +14,23 @@ bool PacketManager::verife_packet(const void* data, size_t size)
 	* last	- P_END
 	*/
 
-	const BYTE* data_ = (const BYTE*)data;
+	Packet p; p.append(data, size);
+
+	sf::Uint8 h_b;
+	sf::Uint8 majver;
+	sf::Uint8 minver;
+	sf::Uint8 pathver;
+
+	p >> h_b >> majver >> minver >> pathver;
 
 	// ÏÐÎÂÅÐÊÀ ÍÀ ÑÑÛËÊÓ È ÄËÈÍÓ
-	if (data_ == NULL or size == NULL) return FALSE;
+	if (data == NULL or size == NULL) return FALSE;
 
 	// ÏÐÎÂÅÐÊÀ ÍÀ×ÀËÀ È ÊÎÍÖÀ
-	if(data_[0] != P_HEAD or data_[size] != P_END) return FALSE;
+	if(h_b != P_HEAD and ((const char*)data)[size] != P_END) return FALSE;
 
 	// ÏÐÎÂÅÐÊÀ ÂÅÐÑÈÈ ÏÀÊÅÒÀ
-	if (data_[1] != MAJOR_VER or data_[2] != MINOR_VER or data_[3] != PATCH_VER) return FALSE;
+	if (majver != MAJOR_VER or minver != MINOR_VER or pathver != PATCH_VER) return FALSE;
 
 	return TRUE;
 }
@@ -32,15 +39,17 @@ PacketManager::PacketManager(Server* serv) {
 	this->m_server = serv;
 }
 
-void PacketManager::process_packet(Player* pl, const void* data, size_t size)
+int PacketManager::process_packet(Player* pl)
 {
 	// ÈÃÐÎÊ ÍÅ ÑÓÙÅÑÒÂÓÅÒ
-	if (pl == NULL) return;
-	// ÏÐÎÂÅÐÊÀ ÏÀÊÅÒÀ
-	if (verife_packet(pdata) == FALSE) return;
+	if (pl == NULL) return Socket::Status::Error;
+
+	Packet p;
+	Socket::Status tcp_status = pl->getTcp()->receive(p);
+	if (tcp_status != Socket::Status::Done) return tcp_status;
 	
-	// Ñîçäàåì ïàêåò èç äàííûõ
-	Packet p; p.append(pdata);
+	// ÏÐÎÂÅÐÊÀ ÏÀÊÅÒÀ
+	if (verife_packet(p.getData(), p.getDataSize()) == FALSE) return Socket::Status::Error;
 	
 	sf::Uint8 h_b;
 	sf::Uint8 majver;
@@ -52,7 +61,7 @@ void PacketManager::process_packet(Player* pl, const void* data, size_t size)
 
 	// TODO: ÁÎËÅÅ ËÅÃÊÓÞ ÂÛÁ
 	switch (c_p) {
-	case C_PING: c_ping(pl, pdata); break;
+	case C_PING: c_ping(pl, p.getData(), p.getDataSize()); break;
 	default:
 		getServer()->getLogger()->info(
 			std::format(L"UNK Packet Type by {}:{}", 
@@ -62,11 +71,11 @@ void PacketManager::process_packet(Player* pl, const void* data, size_t size)
 		);
 		break;
 	}
+	return tcp_status;
 }
 
 void PacketManager::c_ping(Player* pl, const void* data, size_t size)
 {
-	Packet p; p.append(pdata); // TODO:: ÓÏÐÀÇÄÍÈÒÜ ÅÑËÈ ÍÅ ÍÀÄÎ ÁÓÄÅÒ
-
+	pl->setPingMS(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - pl->getLastPing_tp()).count());
 	pl->setLastPing_tp(std::chrono::system_clock::now());
 }

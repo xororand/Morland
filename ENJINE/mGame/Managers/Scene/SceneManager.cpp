@@ -23,7 +23,11 @@ void SceneManager::setScene(Scene* scene) {
 	// TODO: wait for overing scene
 	m_current_scene = scene;
 }
-
+void SceneManager::setScene(Scene::Type type, std::wstring name) {
+	// TODO: wait for overing scene
+	setScene(type);
+	setSceneName(name);
+}
 void SceneManager::setSceneName(std::wstring name)
 {
 	if (m_current_scene == NULL) return;

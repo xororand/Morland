@@ -2,8 +2,8 @@
 
 #define SERVER_DEF_PORT 55055
 #define SERVER_PROCESS_THREADS_COUNT 4
-#define MAX_TPS 20.0 // 1סוך / 60
-#define MAX_PLAYER_PING		1000 // MS
+#define MAX_TPS 60.0 // 1סוך / 60
+#define MAX_PLAYER_PING		5000 // MS
 #define MAX_PLAYER_TIMEOUT	10 // ֵׁÊ׃ִֽ
 
 #define P_HEAD	0xAC

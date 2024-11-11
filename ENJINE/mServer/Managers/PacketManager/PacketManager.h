@@ -1,9 +1,6 @@
 #pragma once
-
 class Player;
 class Server;
-
-#define pdata data, size
 
 class PacketManager
 {
@@ -16,7 +13,7 @@ public:
 
 	Server* getServer() { return m_server;}
 
-	void process_packet(Player* pl, const void* data, size_t size);
+	int process_packet(Player* pl);
 
 	void c_ping(Player* pl, const void* data, size_t size);
 };

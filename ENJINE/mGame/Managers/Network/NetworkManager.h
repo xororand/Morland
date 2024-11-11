@@ -20,15 +20,20 @@ private:
 	TcpSocket* m_tcp	= nullptr;
 
 	NetworkManager::Status status		= Status::None;
-	int			last_try_time			= 0;
+	int				last_try_time		= 0;
 	int				try_connect_count	= 0;
 	std::string		last_ip				= "";
 	unsigned short	last_port			= 0;
+	std::chrono::system_clock::time_point last_c_ping;
 public:
 	NetworkManager(Game* game);
 	
 	Game* getGame() { return m_game; }
 	
+	void process();
+
+	void send_ping();
+
 	TcpSocket* getTCP() { return m_tcp; }
 
 	void set_connection_data(std::string ip, unsigned short port);
