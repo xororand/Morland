@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 #define SERVER_DEF_PORT 55055
 #define SERVER_PROCESS_THREADS_COUNT 4
 #define MAX_TPS 20.0 // 1сек / 60
