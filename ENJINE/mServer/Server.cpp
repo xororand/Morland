@@ -81,6 +81,12 @@ Server::Server()
     setlocale(LC_ALL, "RU");
     m_logger = new Logger();
 
+    // —Œ«ƒ¿Õ»≈ m_b2worldId
+    b2WorldDef worldDef = b2DefaultWorldDef();
+    worldDef.gravity = (b2Vec2)( 0.0f, 0.0f );
+
+    m_b2worldId = b2CreateWorld(&worldDef);
+
     m_packetmng = new PacketManager(this);
     m_window = new RenderWindow();
 

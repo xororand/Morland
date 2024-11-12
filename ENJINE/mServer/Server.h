@@ -2,6 +2,7 @@
 #include "SFML/Graphics.hpp"
 #include <imgui-SFML.h>
 #include <imgui.h>
+#include "box2d/box2d.h"
 
 #include "Managers/PacketManager/PacketManager.h"
 #include "mServer/defines.h"
@@ -32,9 +33,11 @@ public:
 	};
 private:
 	servUI* ui					= nullptr;
-	Logger* m_logger			= nullptr;;
+	Logger* m_logger			= nullptr;
+	b2WorldId m_b2worldId;
 	PacketManager* m_packetmng	= nullptr;
 	RenderWindow* m_window		= nullptr;
+	
 
 	sf::Clock deltaClock;
 	
