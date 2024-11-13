@@ -1,7 +1,7 @@
 #pragma once
 #include <mutex>
 #include "SFML/Graphics.hpp"
-#include <Object/RootObj/RootObj.h>
+#include "Object/mGame/G_RootObj/G_RootObj.h"
 #include <mGame/Managers/Network/NetworkManager.h>
 
 using namespace sf;

@@ -4,12 +4,13 @@
 #include <imgui.h>
 #include "box2d/box2d.h"
 
-#include "Managers/PacketManager/PacketManager.h"
-#include "mServer/defines.h"
 #include "mGame/Managers/Network/defines.h"
+#include "mServer/defines.h"
 #include "Utils/Logger/Logger.h"
+#include "Managers/PacketManager/PacketManager.h"
 #include "servUI/servUI.h"
 #include "Player/Player.h"
+#include "Object/mServer/S_RootObj/S_RootObj.h"
 #include "version.h"
 
 #include "windows.h"
@@ -32,27 +33,28 @@ public:
 		float m_current_tps = 0.0;
 	};
 private:
-	bool is_run = true;
-	std::vector<std::thread*> m_threads;
-	std::deque<Player*> m_players;
+	std::vector<std::thread*>	m_threads;
+	std::deque<Player*>			m_players;
 
-	servUI* ui					= nullptr;
-	Logger* m_logger			= nullptr;
-	b2WorldId m_b2worldId;
-	int m_subStepCount = 4;
-	float m_tps_treshold;
-	PacketManager* m_packetmng	= nullptr;
-	RenderWindow* m_window		= nullptr;
+	bool			is_run				= true;
+	servUI*			ui					= nullptr;
+	S_RootObj		m_root;
+	Logger*			m_logger			= nullptr;
+	b2WorldId		m_b2worldId;
+	int				m_subStepCount		= 4;
+	float			m_tps_treshold;
+	PacketManager*	m_packetmng			= nullptr;
+	RenderWindow*	m_window			= nullptr;
 	
-	sf::Clock deltaClock;
+	sf::Clock		deltaClock;
 	
-	TcpListener m_tcp_listener;
-	debug_stats* d_stats;
+	TcpListener		m_tcp_listener;
+	debug_stats*	d_stats;
 
 	// MUTEXES
-	std::mutex tps_mutex;
-	std::mutex players_mutex;
-	std::mutex players_internal_mutex;
+	std::mutex		tps_mutex;
+	std::mutex		players_mutex;
+	std::mutex		players_internal_mutex;
 private:
 	void accept_new_connections();
 	void process_connections();

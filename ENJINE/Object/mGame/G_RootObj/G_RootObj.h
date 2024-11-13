@@ -1,10 +1,10 @@
 #pragma once
-#include "../Object.h"
+#include "../../G_Object.h"
 
-class RootObj : public Object
+class G_RootObj : public G_Object
 {
 public:
-	RootObj();
+	G_RootObj();
 	virtual void draw(sf::RenderTarget& target, const sf::Transform& transform = sf::Transform()) const;
 };
 

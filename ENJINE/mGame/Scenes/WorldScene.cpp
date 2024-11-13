@@ -9,7 +9,7 @@ WorldScene::WorldScene(Game* game) {
 	
 	RenderWindow* rw = getGame()->getRenderWindow();
 
-	m_root = RootObj();
+	m_root = G_RootObj();
 
 	ui = std::make_shared<UI>(getGame());
 	

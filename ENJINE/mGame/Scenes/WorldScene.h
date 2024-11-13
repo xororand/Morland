@@ -6,7 +6,7 @@
 class WorldScene : public Scene
 {
 private:
-	RootObj m_root;
+	G_RootObj m_root;
 
 	std::shared_ptr<UI> ui;
 public:
