@@ -76,7 +76,7 @@ void servUI::drawDebug() {
             L""
         };
 
-        std::deque<Player*> players = getServer()->getPlayers();
+        std::deque<Peer*> peers = getServer()->getPeers();
 
         if (ImGui::BeginTable(to_ancii(L"PLAYERS table"), cols_names.size()))
         {
@@ -86,31 +86,31 @@ void servUI::drawDebug() {
                 ImGui::TableSetupColumn(to_ancii(cols_names[col]), ImGuiTableColumnFlags_WidthStretch, 0.0f, col / static_cast<float>(cols_names.size()));
             }
             ImGui::TableHeadersRow();
-            for (int row = 0; row < players.size(); row++)
+            for (int row = 0; row < peers.size(); row++)
             {
-                Player* pl = players[row];
-                if (pl == NULL) continue; // пропуск пустых ячеек, освобожденных после выхода игроков
+                Peer* peer = peers[row];
+                if (peer == NULL) continue; // пропуск пустых ячеек, освобожденных после выхода игроков
 
                 ImGui::TableNextRow();
 
                 ImGui::TableSetColumnIndex(0);
                 
-                ImGui::Text("%d", pl->getID());
+                ImGui::Text("%d", peer->getID());
 
                 ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%dms", pl->getPingMS() - (long long)TCP_C_PING_DELAY);
+                ImGui::Text("%dms", peer->getPingMS() - (long long)TCP_C_PING_DELAY);
 
                 ImGui::TableSetColumnIndex(2);
-                ImGui::Text("%s", to_ancii(Player::to_wstring(pl->getStatus())) );
+                ImGui::Text("%s", to_ancii(Peer::to_wstring(peer->getStatus())) );
 
-                TcpSocket* tcp = pl->getTcp();
+                TcpSocket* tcp = peer->getTcp();
                 ImGui::TableSetColumnIndex(3);
                 ImGui::Text("%s:%d", tcp->getRemoteAddress().toString().c_str(), tcp->getLocalPort());
 
                 ImGui::TableSetColumnIndex(4);
                 if (ImGui::Button("Disconnect")) {
-                    pl->setDisconnectReason(L"Admin");
-                    getServer()->disconnect_player(pl->getID());
+                    peer->setDisconnectReason(L"Admin");
+                    peer->disconnect();
                 }
             }
             ImGui::EndTable();

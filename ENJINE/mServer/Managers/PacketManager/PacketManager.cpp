@@ -39,7 +39,7 @@ PacketManager::PacketManager(Server* serv) {
 	this->m_server = serv;
 }
 
-int PacketManager::process_packet(Player* pl)
+int PacketManager::process_packet(Peer* pl)
 {
 	// ÈÃÐÎÊ ÍÅ ÑÓÙÅÑÒÂÓÅÒ
 	if (pl == NULL) return Socket::Status::Error;
@@ -66,10 +66,10 @@ int PacketManager::process_packet(Player* pl)
 	return tcp_status;
 }
 
-void PacketManager::c_ping(Player* pl, const void* data, size_t size)
+void PacketManager::c_ping(Peer* pl, const void* data, size_t size)
 {
 	// ÑÒÀÂÈÌ ÑÒÀÒÓÑ ×ÒÎ ÊËÈÅÍÒ ÏÐÎØÅË ÏÐÎÂÅÐÊÓ ÏÐÎÒÎÊÎËÀ
-	if (pl->getStatus() == Player::not_verifed) pl->setStatus(Player::verifed);
+	if (pl->getStatus() == Peer::not_verifed) pl->setStatus(Peer::verifed);
 
 	pl->setPingMS(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - pl->getLastPing_tp()).count());
 	pl->setLastPing_tp(std::chrono::system_clock::now());

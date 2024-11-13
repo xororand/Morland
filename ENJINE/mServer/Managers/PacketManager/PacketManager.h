@@ -1,5 +1,5 @@
 #pragma once
-class Player;
+class Peer;
 class Server;
 
 class PacketManager
@@ -13,8 +13,8 @@ public:
 
 	Server* getServer() { return m_server;}
 
-	int process_packet(Player* pl);
+	int process_packet(Peer* pl);
 
-	void c_ping(Player* pl, const void* data, size_t size);
+	void c_ping(Peer* pl, const void* data, size_t size);
 };
 

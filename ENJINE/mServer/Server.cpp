@@ -6,15 +6,15 @@ void Server::accept_new_connections() {
 
     if (status == Socket::Status::Done) {
         // TODO: ПОИСК ИЗ БАЗЫ ПОЗИЦИИ ИГРОКА, ЕСЛИ ЭТО БУДЕТ НЕ СЕССИОННЫЙ ЖАНР
-        addPlayer( sock, b2Vec2(0,0) );
+        addPeer( sock );
         return;
     }
     delete sock;
 }
-void Server::process_connections() {
-    std::lock_guard<std::mutex> lock(players_mutex);
+void Server::process_peers() {
+    std::lock_guard<std::mutex> lock(peers_mutex);
 
-    for (auto p : m_players) {
+    for (auto p : m_peers) {
         if (p == nullptr) continue;
         p->process();
     }
@@ -29,7 +29,7 @@ void Server::drawUI()
         getRenderWindow()->clear();
 
         {
-            std::lock_guard<std::mutex> lock(players_mutex);
+            std::lock_guard<std::mutex> lock(peers_mutex);
             ui->drawDebug();
         }
 
@@ -52,7 +52,7 @@ void Server::drawUI()
 void Server::tick()
 {
     accept_new_connections();
-    process_connections();
+    process_peers();
     //b2World_Step(m_b2worldId, m_tps_treshold, m_subStepCount);
 }
 void Server::thread_process(int id) {
@@ -105,16 +105,16 @@ Server::Server(float tps)
     for (int i = 0; i < 500; i++) d_stats->tps_samples[i] = 0.0f;
 }
 
-void Server::addPlayer(TcpSocket* sock, b2Vec2 pos) {
-    std::lock_guard<std::mutex> lock(players_internal_mutex);
+void Server::addPeer(TcpSocket* sock) {
+    std::lock_guard<std::mutex> lock(peers_internal_mutex);
 
-    Player* p = nullptr;
+    Peer* p = nullptr;
     size_t idx = 0;
     bool push = false;
 
     // Поиск пустой ячейки
-    for (int i = 0; i < m_players.size(); i++) {
-        if (m_players[i] == nullptr) {
+    for (int i = 0; i < m_peers.size(); i++) {
+        if (m_peers[i] == nullptr) {
             idx = i;
             push = true;
         }
@@ -122,44 +122,44 @@ void Server::addPlayer(TcpSocket* sock, b2Vec2 pos) {
 
     // Пустая ячейка не была найдена
     if (!push) {
-        if (m_players.size() == 0)
+        if (m_peers.size() == 0)
             idx = 0;
         else
-            idx = m_players.size();
+            idx = m_peers.size();
 
-        p = new Player(idx, this, sock, pos);
-        m_players.push_back(p); 
+        p = new Peer(idx, this, sock);
+        m_peers.push_back(p);
     }
     else {
-        p = new Player(idx, this, sock, pos);
-        m_players[idx] = p;
+        p = new Peer(idx, this, sock);
+        m_peers[idx] = p;
     } 
 }
 
-void Server::ping_player(size_t idx)
+void Server::ping_peer(size_t idx)
 {
     // TODO: PING PLAYER, IF NOT RESPONDE = DISCONNECT
 }
-void Server::disconnect_player(size_t idx) {
+void Server::disconnect_peer(size_t idx) {
     // Индекс не может быть больше чем кол-во игроков
-    if (idx > getPlayers().size()) return;
+    if (idx > getPeers().size()) return;
 
-    if (m_players[idx] == NULL) return;
+    if (m_peers[idx] == NULL) return;
 
     getLogger()->info(std::format(L"[p-] {}:{} disconnected by {}",
-        Utils::encoding::to_wide(m_players[idx]->getTcp()->getRemoteAddress().toString()),
-        m_players[idx]->getTcp()->getRemotePort(),
-        m_players[idx]->getDisconnectReason()
+        Utils::encoding::to_wide(m_peers[idx]->getTcp()->getRemoteAddress().toString()),
+        m_peers[idx]->getTcp()->getRemotePort(),
+        m_peers[idx]->getDisconnectReason()
     ).c_str());
 
-    delete m_players[idx];
-    m_players[idx] = nullptr;
+    delete m_peers[idx];
+    m_peers[idx] = nullptr;
 }
 
-std::deque<Player*> Server::getPlayers()
+std::deque<Peer*> Server::getPeers()
 {
-    std::lock_guard<std::mutex> lock(players_internal_mutex);
-    return m_players;
+    std::lock_guard<std::mutex> lock(peers_internal_mutex);
+    return m_peers;
 }
 
 void Server::setMaxTPS(float tps) { 
@@ -184,7 +184,7 @@ int Server::run() {
 
     for (auto& t : m_threads) t->join();            // Ждем окончания работы потоков
 
-    for (auto p : m_players) disconnect_player(p->getID());  // Отключаем каждого игрока
+    for (auto p : m_peers) disconnect_peer(p->getID());  // Отключаем каждого игрока
 
     return 0;
 }

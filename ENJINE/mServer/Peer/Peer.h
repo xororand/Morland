@@ -10,10 +10,9 @@ using namespace std::chrono;
 class Server;
 
 /*
-Dynamic Body
 Обрабатывается каждый тик сервера
 */
-class Player
+class Peer
 {
 public:
 	/*
@@ -30,7 +29,6 @@ public:
 	};
 private:
 	size_t idx = 0;
-	b2BodyId m_bodyId;
 	Server* m_server;
 
 	TcpSocket* m_tcp;
@@ -43,11 +41,10 @@ private:
 	status m_status = not_verifed;
 	std::wstring disconnect_reason = L"Unknown";
 public:
-	Player(size_t idx, Server* serv, TcpSocket* tcp, b2Vec2 pos);
-	~Player();
+	Peer(size_t idx, Server* serv, TcpSocket* tcp);
+	~Peer();
 
 	void process();
-	b2BodyId getBody()	{ return m_bodyId; }
 	Server* getServer() { return m_server; }
 
 	static std::wstring to_wstring(status s);
@@ -60,8 +57,9 @@ public:
 	void setPingMS(long long ms)						{ ping_ms = ms; }
 	
 	TcpSocket*		getTcp()								{ return m_tcp; }
-	void setStatus(status s) { m_status = s; }
+	void			setStatus(status s)						{ m_status = s; }
 	status			getStatus()								{ return m_status; }
+	void			disconnect();
 	void			setDisconnectReason(std::wstring str)	{ disconnect_reason = str; }
 	std::wstring	getDisconnectReason()					{ return disconnect_reason; }
 	size_t			getID()									{ return idx; }

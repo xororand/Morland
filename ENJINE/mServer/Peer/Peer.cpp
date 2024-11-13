@@ -1,7 +1,8 @@
-#include "Player.h"
+#include "Peer.h"
+#include "Peer.h"
 #include "mServer/Server.h"
 
-Player::Player(size_t idx, Server* serv, TcpSocket* tcp, b2Vec2 pos) {
+Peer::Peer(size_t idx, Server* serv, TcpSocket* tcp) {
 	this->idx = idx;
 
 	time(&first_connect_t);
@@ -13,24 +14,18 @@ Player::Player(size_t idx, Server* serv, TcpSocket* tcp, b2Vec2 pos) {
 	m_tcp->setBlocking(false);
 
 	setStatus(status::not_verifed);
-
-	b2BodyDef bodyDef = b2DefaultBodyDef();
-	bodyDef.type = b2_dynamicBody;
-	bodyDef.position = pos;
-
-	m_bodyId = b2CreateBody(getServer()->getWorld(), &bodyDef);
 	// TODO: BODY SHAPE DEF
 	getServer()->getLogger()->info(std::format(L"[p+] {}:{} New connection...", 
 		Utils::encoding::to_wide(tcp->getRemoteAddress().toString()), 
 		tcp->getRemotePort() ).c_str() );
 }
 
-Player::~Player() {
+Peer::~Peer() {
 	delete m_tcp;
 }
 
 // Îáðàáîòêà îòäåëüíîãî èãðîêà â 1 ÒÈÊ Ñåðâåðà
-void Player::process() {
+void Peer::process() {
 	Server* serv = getServer();
 
 	time_t timeout = time(0) - last_packet_t;
@@ -39,10 +34,10 @@ void Player::process() {
 	// ÑËÈØÊÎÌ ÁÎËÜØÎÉ ÏÈÍÃ
 	if (ping_ms >= MAX_PLAYER_PING)		{ disconnect_reason = L"HIGH PING"; setStatus(status::disconnected); }
 	// ÑËÈØÊÎÌ ÁÎËÜØÎÉ ÒÀÉÌÀÓÒ ÏÀÊÅÒÎÂ - ÍÀ×ÈÍÀÅÌ ÎÒÏÐÀÂÊÓ ÏÈÍÃÀ
-	if (timeout >= MAX_PLAYER_TIMEOUT / 2) serv->ping_player(this->getID()); 
+	if (timeout >= MAX_PLAYER_TIMEOUT / 2) serv->ping_peer(this->getID()); 
 	// ÎÒÊËÞ×ÀÅÌ ÏÎ ÏÐÈ×ÈÍÅ ÂÛÑÎÊÎÃÎ ÒÀÉÌÀÓÒÀ ÏÀÊÅÒÎÂ
-	if (this->getStatus() == Player::status::disconnected) {
-		getServer()->disconnect_player(this->getID());
+	if (this->getStatus() == Peer::status::disconnected) {
+		disconnect();
 		return;
 	}
 
@@ -59,7 +54,7 @@ void Player::process() {
 
 }
 
-std::wstring Player::to_wstring(status s)
+std::wstring Peer::to_wstring(status s)
 {
 	switch (s) {
 	case disconnected:	return L"Disconnected";
@@ -69,4 +64,9 @@ std::wstring Player::to_wstring(status s)
 	default:			return L"UNK_STR";
 	}
 	return L"UNK_STR";
+}
+
+void Peer::disconnect()
+{
+	getServer()->disconnect_peer(this->getID());
 }

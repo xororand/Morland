@@ -9,7 +9,7 @@
 #include "Utils/Logger/Logger.h"
 #include "Managers/PacketManager/PacketManager.h"
 #include "servUI/servUI.h"
-#include "Player/Player.h"
+#include "Peer/Peer.h"
 #include "Object/mServer/S_RootObj/S_RootObj.h"
 #include "version.h"
 
@@ -34,7 +34,7 @@ public:
 	};
 private:
 	std::vector<std::thread*>	m_threads;
-	std::deque<Player*>			m_players;
+	std::deque<Peer*>			m_peers;
 
 	bool			is_run				= true;
 	servUI*			ui					= nullptr;
@@ -53,11 +53,11 @@ private:
 
 	// MUTEXES
 	std::mutex		tps_mutex;
-	std::mutex		players_mutex;
-	std::mutex		players_internal_mutex;
+	std::mutex		peers_mutex;
+	std::mutex		peers_internal_mutex;
 private:
 	void accept_new_connections();
-	void process_connections();
+	void process_peers();
 	void drawUI();
 
 	void tick();
@@ -67,17 +67,17 @@ public:
 	Server(float tps = (float)(1.0 / MAX_TPS));
 	int run();
 
-	void addPlayer(TcpSocket* sock, b2Vec2 pos);
+	void addPeer(TcpSocket* sock);
 
-	void ping_player(size_t idx);
-	void disconnect_player(size_t idx);
+	void ping_peer(size_t idx);
+	void disconnect_peer(size_t idx);
 	
-	Logger* getLogger()					{ return m_logger; }
-	b2WorldId getWorld()				{ return m_b2worldId; }
-	PacketManager* getPacketManager()	{ return m_packetmng; }
-	RenderWindow* getRenderWindow()		{ return m_window; }
+	Logger*			getLogger()			{ return m_logger; }
+	b2WorldId		getWorld()			{ return m_b2worldId; }
+	PacketManager*	getPacketManager()	{ return m_packetmng; }
+	RenderWindow*	getRenderWindow()	{ return m_window; }
 
-	std::deque<Player*> getPlayers();
+	std::deque<Peer*> getPeers();
 
 	float getMaxTPS()					{ return m_tps_treshold; }
 	void setMaxTPS(float tps);

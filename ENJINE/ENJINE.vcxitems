@@ -17,7 +17,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Component\Component.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Component\HealthComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)enjPacket\enjPacket.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Player\Player.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Peer\Peer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Game.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Texture\TextureManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\defines.h" />
@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)enjPacket\enjPacket.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Player\Player.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Peer\Peer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Game.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Managers\Texture\TextureManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mServer\ServUI\servUI.cpp" />
