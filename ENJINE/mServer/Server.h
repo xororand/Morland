@@ -32,23 +32,21 @@ public:
 		float m_current_tps = 0.0;
 	};
 private:
+	bool is_run = true;
+	std::vector<std::thread*> m_threads;
+	std::deque<Player*> m_players;
+
 	servUI* ui					= nullptr;
 	Logger* m_logger			= nullptr;
 	b2WorldId m_b2worldId;
+	int m_subStepCount = 4;
+	float m_tps_treshold;
 	PacketManager* m_packetmng	= nullptr;
 	RenderWindow* m_window		= nullptr;
 	
-
 	sf::Clock deltaClock;
 	
-	float tps_treshold = (float)(1.0 / MAX_TPS);
-
-	bool is_run = true;
-	std::vector<std::thread*> m_threads;
-	
 	TcpListener m_tcp_listener;
-	std::deque<Player*> m_players;
-
 	debug_stats* d_stats;
 
 	// MUTEXES
@@ -64,19 +62,23 @@ private:
 
 	void thread_process(int id);
 public:
-	Server();
-	int run(int ticksPerSecond);
+	Server(float tps = (float)(1.0 / MAX_TPS));
+	int run();
 
-	void addPlayer(TcpSocket* sock);
+	void addPlayer(TcpSocket* sock, b2Vec2 pos);
 
 	void ping_player(size_t idx);
 	void disconnect_player(size_t idx);
 	
 	Logger* getLogger()					{ return m_logger; }
+	b2WorldId getWorld()				{ return m_b2worldId; }
 	PacketManager* getPacketManager()	{ return m_packetmng; }
 	RenderWindow* getRenderWindow()		{ return m_window; }
 
 	std::deque<Player*> getPlayers();
+
+	float getMaxTPS()					{ return m_tps_treshold; }
+	void setMaxTPS(float tps);
 	float getCurrentTPS()				{ return d_stats->m_current_tps; }
 	debug_stats* getDebugStats()		{ return d_stats; }
 };

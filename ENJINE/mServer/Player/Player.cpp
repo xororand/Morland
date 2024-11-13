@@ -1,19 +1,25 @@
 #include "Player.h"
 #include "mServer/Server.h"
 
-Player::Player(size_t idx, Server* ptr_serv, TcpSocket* tcp) {
+Player::Player(size_t idx, Server* serv, TcpSocket* tcp, b2Vec2 pos) {
 	this->idx = idx;
 
 	time(&first_connect_t);
 	time(&last_packet_t);
 	last_ping_ms = std::chrono::system_clock::now();
 
-	m_server = ptr_serv;
+	m_server = serv;
 	m_tcp = tcp;
 	m_tcp->setBlocking(false);
 
 	setStatus(status::not_verifed);
 
+	b2BodyDef bodyDef = b2DefaultBodyDef();
+	bodyDef.type = b2_dynamicBody;
+	bodyDef.position = pos;
+
+	m_bodyId = b2CreateBody(getServer()->getWorld(), &bodyDef);
+	// TODO: BODY SHAPE DEF
 	getServer()->getLogger()->info(std::format(L"[p+] {}:{} New connection...", 
 		Utils::encoding::to_wide(tcp->getRemoteAddress().toString()), 
 		tcp->getRemotePort() ).c_str() );
@@ -31,7 +37,7 @@ void Player::process() {
 	// ÒÀÉÌÀÓÒ ÈÑÒÅÊ
 	if (timeout > MAX_PLAYER_TIMEOUT)	{ disconnect_reason = L"TIMEOUT"; setStatus(status::disconnected); }
 	// ÑËÈØÊÎÌ ÁÎËÜØÎÉ ÏÈÍÃ
-	if(ping_ms >= MAX_PLAYER_PING)		{ disconnect_reason = L"HIGH PING"; setStatus(status::disconnected); }
+	if (ping_ms >= MAX_PLAYER_PING)		{ disconnect_reason = L"HIGH PING"; setStatus(status::disconnected); }
 	// ÑËÈØÊÎÌ ÁÎËÜØÎÉ ÒÀÉÌÀÓÒ ÏÀÊÅÒÎÂ - ÍÀ×ÈÍÀÅÌ ÎÒÏÐÀÂÊÓ ÏÈÍÃÀ
 	if (timeout >= MAX_PLAYER_TIMEOUT / 2) serv->ping_player(this->getID()); 
 	// ÎÒÊËÞ×ÀÅÌ ÏÎ ÏÐÈ×ÈÍÅ ÂÛÑÎÊÎÃÎ ÒÀÉÌÀÓÒÀ ÏÀÊÅÒÎÂ
@@ -44,7 +50,10 @@ void Player::process() {
 	Socket::Status tcp_status = (Socket::Status)serv->getPacketManager()->process_packet(this);
 
 	if (tcp_status == Socket::Status::Done) last_packet_t = time(0);
-	if (tcp_status == Socket::Status::Disconnected or tcp_status == Socket::Status::Error)
+	if (tcp_status == Socket::Status::Disconnected) {
+		disconnect_reason = L"Disconnected"; setStatus(status::disconnected);
+	}
+	if (tcp_status == Socket::Status::Error)
 	{ disconnect_reason = L"Receive TCP failed"; setStatus(status::disconnected); }
 
 

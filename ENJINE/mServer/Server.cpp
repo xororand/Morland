@@ -4,8 +4,9 @@ void Server::accept_new_connections() {
     TcpSocket* sock = new TcpSocket();
     Socket::Status status = m_tcp_listener.accept(*sock);
 
-    if (status == Socket::Status::Done) { 
-        addPlayer(sock);
+    if (status == Socket::Status::Done) {
+        // TODO: ÏÎÈÑÊ ÈÇ ÁÀÇÛ ÏÎÇÈÖÈÈ ÈÃÐÎÊÀ, ÅÑËÈ ÝÒÎ ÁÓÄÅÒ ÍÅ ÑÅÑÑÈÎÍÍÛÉ ÆÀÍÐ
+        addPlayer( sock, b2Vec2(0,0) );
         return;
     }
     delete sock;
@@ -52,6 +53,7 @@ void Server::tick()
 {
     accept_new_connections();
     process_connections();
+    //b2World_Step(m_b2worldId, m_tps_treshold, m_subStepCount);
 }
 void Server::thread_process(int id) {
     while (is_run) {
@@ -59,8 +61,8 @@ void Server::thread_process(int id) {
 
         float TFLT = d_stats->m_tps_timer.getElapsedTime().asSeconds();
 
-        if (TFLT < tps_treshold) {
-            float slt = ( (tps_treshold - TFLT)) * 100;
+        if (TFLT < m_tps_treshold) {
+            float slt = ( (m_tps_treshold - TFLT)) * 100;
 
             std::this_thread::sleep_until(
                 std::chrono::steady_clock::now() + std::chrono::milliseconds((long long)slt)
@@ -76,9 +78,11 @@ void Server::thread_process(int id) {
     }
 }
 
-Server::Server()
+Server::Server(float tps)
 {
     setlocale(LC_ALL, "RU");
+    setMaxTPS(tps);
+
     m_logger = new Logger();
 
     // ÑÎÇÄÀÍÈÅ m_b2worldId
@@ -101,7 +105,7 @@ Server::Server()
     for (int i = 0; i < 500; i++) d_stats->tps_samples[i] = 0.0f;
 }
 
-void Server::addPlayer(TcpSocket* sock) {
+void Server::addPlayer(TcpSocket* sock, b2Vec2 pos) {
     std::lock_guard<std::mutex> lock(players_internal_mutex);
 
     Player* p = nullptr;
@@ -123,11 +127,11 @@ void Server::addPlayer(TcpSocket* sock) {
         else
             idx = m_players.size();
 
-        p = new Player(idx, this, sock);
+        p = new Player(idx, this, sock, pos);
         m_players.push_back(p); 
     }
     else {
-        p = new Player(idx, this, sock);
+        p = new Player(idx, this, sock, pos);
         m_players[idx] = p;
     } 
 }
@@ -158,7 +162,11 @@ std::deque<Player*> Server::getPlayers()
     return m_players;
 }
 
-int Server::run(int ticksPerSecond) {
+void Server::setMaxTPS(float tps) { 
+    m_tps_treshold = (float)(1.0 / tps); 
+}
+
+int Server::run() {
     getLogger()->info(L"Starting server...");
 
     if (m_tcp_listener.listen(SERVER_DEF_PORT) != sf::Socket::Done)	getLogger()->exit_error(L"Listening TCP port error!\n");

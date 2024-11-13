@@ -48,19 +48,11 @@ int PacketManager::process_packet(Player* pl)
 	Socket::Status tcp_status = pl->getTcp()->receive(p);
 	if (tcp_status != Socket::Status::Done) return tcp_status;
 	
-	// ÏÐÎÂÅÐÊÀ ÏÀÊÅÒÀ
-	if (verife_packet(p.getData(), p.getDataSize()) == FALSE) return Socket::Status::Error;
-	
-	sf::Uint8 h_b;
-	sf::Uint8 majver;
-	sf::Uint8 minver;
-	sf::Uint8 pathver;
-	sf::Uint16 c_p;
-	// ÏÐÎÂÅÐÊÀ ÍÀ ÓÄÀ×ÍÛÉ ÏÀÐÑÈÍÃ ÏÀÊÅÒÀ
-	if( !(p >> h_b >> majver >> minver >> pathver >> c_p) ) return Socket::Status::Error;
+	// ÏÀÊÅÒ ÍÅ ÏÐÎØÅË ÏÐÎÂÅÐÊÓ ÏÐÎÒÎÊÎËÀ
+	if (!p.isValid()) return Socket::Status::Error;
 
 	// TODO: ÁÎËÅÅ ÓÄÎÁÍÓÞ ÂÛÁÎÐÊÓ êîìàíäà = ôóíêöèÿ
-	switch (c_p) {
+	switch (p.getCommand()) {
 	case C_PING: c_ping(pl, p.getData(), p.getDataSize()); break;
 	default:
 		getServer()->getLogger()->info(
@@ -76,6 +68,9 @@ int PacketManager::process_packet(Player* pl)
 
 void PacketManager::c_ping(Player* pl, const void* data, size_t size)
 {
+	// ÑÒÀÂÈÌ ÑÒÀÒÓÑ ×ÒÎ ÊËÈÅÍÒ ÏÐÎØÅË ÏÐÎÂÅÐÊÓ ÏÐÎÒÎÊÎËÀ
+	if (pl->getStatus() == Player::not_verifed) pl->setStatus(Player::verifed);
+
 	pl->setPingMS(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - pl->getLastPing_tp()).count());
 	pl->setLastPing_tp(std::chrono::system_clock::now());
 }

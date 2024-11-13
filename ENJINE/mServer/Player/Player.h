@@ -1,7 +1,7 @@
 #pragma once
-
 #include "mGame/Managers/Network/defines.h"
 #include "Utils/Utils.h"
+#include "box2d/box2d.h"
 
 #include <chrono>
 
@@ -9,6 +9,10 @@ using namespace std::chrono;
 
 class Server;
 
+/*
+Dynamic Body
+Обрабатывается каждый тик сервера
+*/
 class Player
 {
 public:
@@ -26,7 +30,7 @@ public:
 	};
 private:
 	size_t idx = 0;
-	
+	b2BodyId m_bodyId;
 	Server* m_server;
 
 	TcpSocket* m_tcp;
@@ -38,13 +42,12 @@ private:
 
 	status m_status = not_verifed;
 	std::wstring disconnect_reason = L"Unknown";
-private:
-	void setStatus(status s) { m_status = s; }
 public:
-	Player(size_t idx, Server* ptr_serv, TcpSocket* tcp);
+	Player(size_t idx, Server* serv, TcpSocket* tcp, b2Vec2 pos);
 	~Player();
 
 	void process();
+	b2BodyId getBody()	{ return m_bodyId; }
 	Server* getServer() { return m_server; }
 
 	static std::wstring to_wstring(status s);
@@ -52,10 +55,12 @@ public:
 	system_clock::time_point getLastPing_tp()			{ return last_ping_ms; }
 	void setLastPing_tp(system_clock::time_point tp)	{ last_ping_ms = tp; }
 
+
 	long long getPingMS()								{ return ping_ms; }
 	void setPingMS(long long ms)						{ ping_ms = ms; }
 	
 	TcpSocket*		getTcp()								{ return m_tcp; }
+	void setStatus(status s) { m_status = s; }
 	status			getStatus()								{ return m_status; }
 	void			setDisconnectReason(std::wstring str)	{ disconnect_reason = str; }
 	std::wstring	getDisconnectReason()					{ return disconnect_reason; }

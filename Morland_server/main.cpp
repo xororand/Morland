@@ -2,7 +2,7 @@
 
 int main() {
 	IMGUI_CHECKVERSION();
-	Server server;
-	server.run(60);
+	Server server(60);
+	server.run();
 	return 0;
 }
