@@ -1,20 +1,21 @@
 #pragma once
-class Peer;
-class Server;
+#include "enjPacket/enjPacket.h"
+#include "../S_Manager.h"
 
-class PacketManager
+class Peer;
+
+class PacketManager : public S_Manager
 {
-private:
-	Server* m_server;
-private:
-	bool verife_packet(const void* data, size_t size);
 public:
 	PacketManager(Server* serv);
 
-	Server* getServer() { return m_server;}
+	void send_packet(Peer* peer, enjPacket p);
+	int process_packet(Peer* peer);
 
-	int process_packet(Peer* pl);
+	void c_ping(Peer* peer);												// To-Client
+	void c_ping(Peer* peer, const void* data, size_t size); // From-Client
 
-	void c_ping(Peer* pl, const void* data, size_t size);
+	void c_login(Peer* peer);								 // To-Client
+	void c_login(Peer* peer, const void* data, size_t size); // From-Client
 };
 

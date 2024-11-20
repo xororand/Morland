@@ -30,8 +30,6 @@ bool enjPacket::verife_packet(const void* data, size_t size)
 	// опнбепйю бепяхх оюйерю
 	if (majver != (sf::Uint8)MAJOR_VER or minver != (sf::Uint8)MINOR_VER or pathver != (sf::Uint8)PATCH_VER) return false;
 
-	m_command = c_p;
-
 	return true;
 }
 
@@ -63,5 +61,8 @@ void enjPacket::onReceive(const void* data, std::size_t size)
 		return; 
 	}
 
-    append(data, size);
+	char* newdata = new char[size - 5];
+	for (int i = 4; i < size; i++) newdata[i - 4] = ((const char*)data)[i];
+
+    append(newdata, size - 5);
 }

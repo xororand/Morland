@@ -1,7 +1,7 @@
 #pragma once
 
 #include "defines.h"
-#include "mServer/defines.h"
+#include "enjPacket/defines.h"
 #include "Utils/Logger/Logger.h"
 
 class Game;
@@ -32,11 +32,10 @@ public:
 	
 	void process();
 
+	void process_packet();
 	void send_packet(enjPacket p);
-	void send_ping();
-
+	void c_ping();
 	
-
 	TcpSocket* getTCP() { return m_tcp; }
 
 	void set_connection_data(std::string ip, unsigned short port);

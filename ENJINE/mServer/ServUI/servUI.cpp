@@ -98,7 +98,7 @@ void servUI::drawDebug() {
                 ImGui::Text("%d", peer->getID());
 
                 ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%dms", peer->getPingMS() - (long long)TCP_C_PING_DELAY);
+                ImGui::Text("%dms", peer->getPingMS());
 
                 ImGui::TableSetColumnIndex(2);
                 ImGui::Text("%s", to_ancii(Peer::to_wstring(peer->getStatus())) );

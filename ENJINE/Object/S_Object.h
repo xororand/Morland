@@ -8,17 +8,22 @@ public:
         S_RootObj
     };
 
+    virtual ~S_Object() = default;
+
     S_Object::Type getType()        { return m_type; }
     void setType(S_Object::Type t)  { m_type = t; }
 
-    void addObject(std::shared_ptr<S_Object> obj) { m_objects.push_back(obj); }
+    void addObject(S_Object* obj) { m_objects.push_back(obj); }
 
-    virtual ~S_Object() = default;
+    virtual void onProcess() { };
+    void process();
 public:
+    // Родительский объект
+    S_Object*              m_parent;
     // Дочерние объекты
-    std::vector<std::shared_ptr<S_Object>>    m_objects;
+    std::vector<S_Object*>  m_objects;
     // Компоненты текущего объекта
-    std::vector<std::shared_ptr<Component>> m_components;
+    std::vector<Component*> m_components;
 private:
     // Тип объект
     S_Object::Type m_type;

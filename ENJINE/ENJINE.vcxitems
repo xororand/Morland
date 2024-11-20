@@ -16,15 +16,18 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Component\Component.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Component\HealthComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Managers\DBManager\DBManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)enjPacket\enjPacket.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Peer\Peer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Game.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Texture\TextureManager.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\defines.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)enjPacket\defines.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\ServUI\servUI.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Managers\PacketManager\PacketManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Object\S_Object.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Object\mServer\S_RootObj\S_RootObj.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Object\mServer\S_PlayerObj\S_PlayerObj.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Managers\S_Manager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Logger\Logger.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Network\NetworkManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Scene\SceneManager.h" />
@@ -40,8 +43,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Utils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\vmath\vmath.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)version.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Managers\WorldManager\WorldManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Managers\DBManager\DBManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)enjPacket\enjPacket.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Peer\Peer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Game.cpp" />
@@ -50,6 +55,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Managers\PacketManager\PacketManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Object\S_Object.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Object\mServer\S_RootObj\S_RootObj.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Object\mServer\S_PlayerObj\S_PlayerObj.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Managers\S_Manager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utils\Logger\Logger.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Managers\Network\NetworkManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Managers\Scene\Scene.cpp" />
@@ -63,5 +70,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Server.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utils\Utils.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utils\vmath\vmath.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Managers\WorldManager\WorldManager.cpp" />
   </ItemGroup>
 </Project>

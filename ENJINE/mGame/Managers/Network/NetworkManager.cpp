@@ -15,10 +15,38 @@ void NetworkManager::process()
 	// еякх лш ме ондйкчвемш й яепбепс - опносяй щрни тсмйжхх
 	if (get_status() != connection_done)	return;
 
+	// онксвемхе оюйернб я яепбепю
+	process_packet();
+}
 
-	// нропюбйю охмцю мю яепбеп пюг б TCP_C_PING_DELAY
-	if (duration_cast<std::chrono::milliseconds>(system_clock::now() - last_c_ping).count() >= TCP_C_PING_DELAY) 
-		this->send_ping();
+void NetworkManager::process_packet()
+{
+	enjPacket p;
+	Socket::Status tcp_status = getTCP()->receive(p);
+	if (p.isValid() == false) {
+		set_status(connection_failed);
+		return;
+	}
+	if (tcp_status == Socket::Status::Disconnected or tcp_status == Socket::Status::Error) {
+		set_status(connection_failed);
+		return;
+	}
+
+	if (tcp_status != Socket::Status::Done) return;
+
+	sf::Uint8 c_p = -1;
+	p >> c_p;
+	switch (c_p) {
+	case C_PING: c_ping(); break;
+	default:
+		getGame()->getLogger()->info(
+			std::format(L"UNK Packet Type by {}:{}",
+				Utils::encoding::to_wide(getTCP()->getRemoteAddress().toString()),
+				getTCP()->getLocalPort()
+			).c_str()
+		);
+		break;
+	}
 }
 
 /*
@@ -37,9 +65,7 @@ void NetworkManager::send_packet(enjPacket p)
 	}
 }
 
-void NetworkManager::send_ping() {
-	last_c_ping = system_clock::now();
-
+void NetworkManager::c_ping() {
 	enjPacket p;
 	p << (sf::Uint16)C_PING;
 	send_packet(p);

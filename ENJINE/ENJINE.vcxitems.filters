@@ -38,6 +38,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)enjPacket\enjPacket.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Object\S_Object.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Object\mServer\S_RootObj\S_RootObj.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Object\mServer\S_PlayerObj\S_PlayerObj.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Managers\DBManager\DBManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Managers\WorldManager\WorldManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Managers\S_Manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Logger\Logger.h">
@@ -59,7 +63,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Utils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Server.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Texture\TextureManager.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\defines.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)enjPacket\defines.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Peer\Peer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\vmath\vmath.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)version.h" />
@@ -68,5 +72,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)enjPacket\enjPacket.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Object\S_Object.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Object\mServer\S_RootObj\S_RootObj.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Object\mServer\S_PlayerObj\S_PlayerObj.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Managers\DBManager\DBManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Managers\WorldManager\WorldManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Managers\S_Manager.h" />
   </ItemGroup>
 </Project>

@@ -1,76 +1,82 @@
 #include "PacketManager.h"
 #include "mServer/Server.h"
 
-bool PacketManager::verife_packet(const void* data, size_t size)
-{
-	// TODO: œ–»◊»Õ¿ Œ“ ¿«¿ Œ“ œ¿ ≈“¿ œ–»—À¿“‹  À»≈Õ“”
-
-	/*
-	* PACKET
-	* b0		- P_HEAD
-	* b1		- MAJOR_VER
-	* b2		- MINOR_VER
-	* b3		- PATCH_VER
-	* last	- P_END
-	*/
-
-	Packet p; p.append(data, size);
-
-	sf::Uint8 h_b;
-	sf::Uint8 majver;
-	sf::Uint8 minver;
-	sf::Uint8 pathver;
-
-	p >> h_b >> majver >> minver >> pathver;
-
-	// œ–Œ¬≈– ¿ Õ¿ ——€À ” » ƒÀ»Õ”
-	if (data == NULL or size == NULL) return FALSE;
-
-	// œ–Œ¬≈– ¿ Õ¿◊¿À¿ »  ŒÕ÷¿
-	if(h_b != P_HEAD and ((const char*)data)[size] != P_END) return FALSE;
-
-	// œ–Œ¬≈– ¿ ¬≈–—»» œ¿ ≈“¿
-	if (majver != MAJOR_VER or minver != MINOR_VER or pathver != PATCH_VER) return FALSE;
-
-	return TRUE;
-}
-
 PacketManager::PacketManager(Server* serv) {
-	this->m_server = serv;
+	setServer(serv);
+	getServer()->getLogger()->info(L"Loading PacketManager done.");
 }
 
-int PacketManager::process_packet(Peer* pl)
+void PacketManager::send_packet(Peer* peer, enjPacket p)
 {
-	// »√–Œ  Õ≈ —”Ÿ≈—“¬”≈“
-	if (pl == NULL) return Socket::Status::Error;
+	while (1) {
+		Socket::Status status = peer->getTcp()->send(p);
+		if (status == Socket::Status::Done) return;
+		else if (status == Socket::Status::Partial) { std::this_thread::sleep_for(std::chrono::milliseconds(1)); continue; }
+		else if (status == Socket::Status::Disconnected or status == Socket::Error) {
+			peer->setStatus(Peer::disconnected);
+			return;
+		}
+	}
+}
+
+int PacketManager::process_packet(Peer* peer)
+{
+	// œ»– Õ≈ —”Ÿ≈—“¬”≈“
+	if (peer == nullptr) return Socket::Status::Error;
 
 	enjPacket p;
-	Socket::Status tcp_status = pl->getTcp()->receive(p);
+	Socket::Status tcp_status = peer->getTcp()->receive(p);
 	if (tcp_status != Socket::Status::Done) return tcp_status;
 	
 	// œ¿ ≈“ Õ≈ œ–Œÿ≈À œ–Œ¬≈– ” œ–Œ“Œ ŒÀ¿
 	if (!p.isValid()) return Socket::Status::Error;
 
+	sf::Uint8 p_c = -1;
+
+	p >> p_c;
+
 	// TODO: ¡ŒÀ≈≈ ”ƒŒ¡Õ”ﬁ ¬€¡Œ– ” ÍÓÏ‡Ì‰‡ = ÙÛÌÍˆËˇ
-	switch (p.getCommand()) {
-	case C_PING: c_ping(pl, p.getData(), p.getDataSize()); break;
+	switch ( p_c ) {
+
+	case C_PING: c_ping(peer, p.getData(), p.getDataSize()); break;
+	case C_LOGIN: c_login(peer, p.getData(), p.getDataSize()); break;
+
 	default:
 		getServer()->getLogger()->info(
 			std::format(L"UNK Packet Type by {}:{}", 
-				Utils::encoding::to_wide(pl->getTcp()->getRemoteAddress().toString()), 
-				pl->getTcp()->getLocalPort()
+				Utils::encoding::to_wide( peer->getTcp()->getRemoteAddress().toString() ), 
+				peer->getTcp()->getLocalPort()
 			).c_str()
 		);
+		peer->addUnkPacket();
 		break;
 	}
 	return tcp_status;
 }
 
-void PacketManager::c_ping(Peer* pl, const void* data, size_t size)
-{
-	// —“¿¬»Ã —“¿“”— ◊“Œ  À»≈Õ“ œ–Œÿ≈À œ–Œ¬≈– ” œ–Œ“Œ ŒÀ¿
-	if (pl->getStatus() == Peer::not_verifed) pl->setStatus(Peer::verifed);
+void PacketManager::c_ping(Peer* peer) {
+	enjPacket p;
+	p << C_PING;
+	send_packet(peer, p);
+	peer->setWhenPingSent(system_clock::now());
+}
+void PacketManager::c_ping(Peer* peer, const void* data, size_t size) {
+	long long ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - peer->getWhenPingSent()).count();
+	peer->setPingMS(ms);
 
-	pl->setPingMS(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - pl->getLastPing_tp()).count());
-	pl->setLastPing_tp(std::chrono::system_clock::now());
+	// —“¿¬»Ã —“¿“”— ◊“Œ  À»≈Õ“ œ–Œÿ≈À œ–Œ¬≈– ” œ–Œ“Œ ŒÀ¿
+	if (peer->getStatus() == Peer::not_verifed) {
+		getServer()->getLogger()->info(std::format(L"[p+] {}:{} verifed protocol",
+			Utils::encoding::to_wide(peer->getTcp()->getRemoteAddress().toString()),
+			peer->getTcp()->getRemotePort()).c_str());
+		peer->setStatus(Peer::verifed);
+	}
+}
+
+// TODO: ¿¬“Œ–»«¿÷»ﬂ ﬁ«≈–¿
+void PacketManager::c_login(Peer* peer) {
+
+}
+void PacketManager::c_login(Peer* peer, const void* data, size_t size) {
+
 }
