@@ -16,6 +16,7 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Component\Component.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Component\HealthComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\defines.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Managers\DBManager\DBManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)enjPacket\enjPacket.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Peer\Peer.h" />

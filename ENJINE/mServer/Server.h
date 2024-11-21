@@ -3,7 +3,7 @@
 #include <imgui-SFML.h>
 #include <imgui.h>
 
-
+#include "defines.h"
 #include "mGame/Managers/Network/defines.h"
 #include "enjPacket/defines.h"
 #include "Utils/Logger/Logger.h"
@@ -21,8 +21,10 @@
 #include <deque>
 #include <vector>
 #include <functional>
+#include <filesystem>
 
 using namespace std::chrono;
+namespace fs = std::filesystem;
 
 class Server
 {

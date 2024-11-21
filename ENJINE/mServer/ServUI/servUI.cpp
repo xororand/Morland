@@ -38,9 +38,13 @@ void servUI::drawDebug() {
             ds->tps_samples[ds->tps_point] = tps;
             ds->tps_point++;
             tps = 0;
+            int count = 0;
             for (auto v : ds->tps_samples)
-                tps += v;
-            tps /= 500;
+                if (v != 0) { 
+                    count++;
+                    tps += v; 
+                }
+            tps /= count;
             ms = 1000.0f / tps;
         }
 
@@ -57,7 +61,7 @@ void servUI::drawDebug() {
         ImGui::Text("MOUSE POS:\t(%.1f,%.1f)", m_vec.x, m_vec.y);
         ImGui::Text("TIME:\t%.1fsec; FRAMES:\t%it", ImGui::GetTime(), ImGui::GetFrameCount());
         ImGui::Text("Application average %.3f ms/tick (%.1f TPS)", ms, tps);
-        ImGui::PlotLines("TPS", ds->tps_samples, 500, 0, NULL, 0.0, max_tps * 2.0, ImVec2(0.0, 70.0));
+        ImGui::PlotLines("TPS", ds->tps_samples, 500, 0, NULL, 0.0, max_tps * 2.0f, ImVec2(0.0, 70.0));
 
         ImGui::ShowDemoWindow();
 
@@ -78,12 +82,12 @@ void servUI::drawDebug() {
 
         std::deque<Peer*> peers = getServer()->getPeers();
 
-        if (ImGui::BeginTable(to_ancii(L"PLAYERS table"), cols_names.size()))
+        if (ImGui::BeginTable(to_ancii(L"PLAYERS table"), (int)cols_names.size()))
         {
             
             for (int col = 0; col < cols_names.size(); col++)
             {
-                ImGui::TableSetupColumn(to_ancii(cols_names[col]), ImGuiTableColumnFlags_WidthStretch, 0.0f, col / static_cast<float>(cols_names.size()));
+                ImGui::TableSetupColumn(to_ancii(cols_names[col]), ImGuiTableColumnFlags_WidthStretch, 0.0f, (ImGuiID)(col / static_cast<float>(cols_names.size()) ));
             }
             ImGui::TableHeadersRow();
             for (int row = 0; row < peers.size(); row++)

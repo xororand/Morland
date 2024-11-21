@@ -76,5 +76,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Managers\DBManager\DBManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Managers\WorldManager\WorldManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Managers\S_Manager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mServer\defines.h" />
   </ItemGroup>
 </Project>

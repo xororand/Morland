@@ -28,7 +28,7 @@ int Server::run() {
     if (m_tcp_listener.listen(SERVER_DEF_PORT) != sf::Socket::Done)	getLogger()->exit_error(L"Listening TCP port error!\n");
     m_tcp_listener.setBlocking(false);
 
-    // Запуск поток логики сервера
+    // Запуск потоков логики сервера
     for (int i = 0; i < SERVER_PROCESS_THREADS_COUNT; i++) {
         m_threads.push_back(new std::thread(&Server::thread_process, this, i));
     }
