@@ -19,6 +19,9 @@ mono_crash.*
 # VCPKG Ignore
 vcpkg_installed/
 
+# OBSIDI ignore
+.obsidian/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
