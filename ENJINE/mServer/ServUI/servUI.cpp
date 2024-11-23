@@ -75,6 +75,7 @@ void servUI::drawDebug() {
         std::vector<std::wstring> cols_names {
             L"ID",
             L"PING",
+            L"USERNAME"
             L"STATUS",
             L"IP:PORT",
             L""
@@ -98,20 +99,22 @@ void servUI::drawDebug() {
                 ImGui::TableNextRow();
 
                 ImGui::TableSetColumnIndex(0);
-                
                 ImGui::Text("%d", peer->getID());
 
                 ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%dms", peer->getPingMS());
+                ImGui::Text("%s", peer->getUsername());
 
                 ImGui::TableSetColumnIndex(2);
+                ImGui::Text("%dms", peer->getPingMS());
+
+                ImGui::TableSetColumnIndex(3);
                 ImGui::Text("%s", to_ancii(Peer::to_wstring(peer->getStatus())) );
 
                 TcpSocket* tcp = peer->getTcp();
-                ImGui::TableSetColumnIndex(3);
+                ImGui::TableSetColumnIndex(4);
                 ImGui::Text("%s:%d", tcp->getRemoteAddress().toString().c_str(), tcp->getLocalPort());
 
-                ImGui::TableSetColumnIndex(4);
+                ImGui::TableSetColumnIndex(5);
                 if (ImGui::Button("Disconnect")) {
                     peer->setDisconnectReason(L"Admin");
                     peer->disconnect();

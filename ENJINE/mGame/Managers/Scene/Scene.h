@@ -34,9 +34,9 @@ public:
     int getPage()                  { return m_current_page; }
 
     void process() {
+        this->onUpdateEvents();
         this->onProcess();
         this->onDraw();
-        this->onUpdateEvents();
     }
 
     // Общая логика сцены

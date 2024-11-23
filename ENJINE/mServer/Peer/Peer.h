@@ -32,6 +32,8 @@ public:
 	};
 private:
 	size_t idx = 0;
+	std::wstring m_username = L"None";
+
 	Server*			m_server		= nullptr;
 	S_PlayerObj*	m_playerobj		= nullptr;;
 
@@ -61,6 +63,9 @@ public:
 	system_clock::time_point getWhenPingSent()			{ return ping_sent_t; }
 	void setWhenPingSent(system_clock::time_point tp)	{ ping_sent_t = tp; }
 	void setPing(long long ms)							{ ping_ms = ms; }
+
+	void setUsername(std::wstring name) { m_username = name; }
+	std::wstring getUsername()			{ return m_username; }
 
 	void disconnect();
 	void ping();

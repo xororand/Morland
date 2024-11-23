@@ -68,6 +68,7 @@ public:
 	void addPeer(TcpSocket* sock);
 	void disconnectPeer(size_t idx);
 	bool isPeerExists(size_t idx);
+	bool isUsernameConnected(std::wstring name);
 
 	Logger*			getLogger()			{ return m_logger;		}
 	DBManager*		getDBManager()		{ return m_dbmanager; }

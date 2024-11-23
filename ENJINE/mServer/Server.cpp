@@ -112,6 +112,18 @@ bool Server::isPeerExists(size_t idx)
     return true;
 }
 
+bool Server::isUsernameConnected(std::wstring name)
+{
+    std::deque<Peer*> peers = getPeers();
+    for (int i = 0; i < peers.size(); i++) {
+        Peer* peer = peers[i];
+        if (peer == NULL) continue; // пропуск пустых ячеек, освобожденных после выхода игроков
+
+        if (peer->getUsername() == name) return true;
+    }
+    return false;
+}
+
 void Server::setMaxTPS(float tps) { 
     m_tps_treshold = (float)(1.0 / tps); 
 }

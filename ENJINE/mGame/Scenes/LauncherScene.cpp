@@ -219,8 +219,7 @@ void LauncherScene::onDraw() {
 void LauncherScene::onUpdateEvents() {
 	sf::Event event;
 	RenderWindow* rw = getGame()->getRenderWindow();
-	while (rw->pollEvent(event))
-	{
+	while (rw->pollEvent(event)) {
 		ImGui::SFML::ProcessEvent(*rw, event);
 		if (event.type == sf::Event::Closed)
 			rw->close();

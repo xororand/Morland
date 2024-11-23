@@ -100,7 +100,6 @@ void PacketManager::c_register_user(Peer* peer, enjPacket& p) {
 	log->info(std::format(L"[u+] User {} - {}:{}, has successful registered", username, to_wide(ip), port).c_str());
 }
 
-// TODO: АВТОРИЗАЦИЯ ЮЗЕРА
 void PacketManager::c_login_user(Peer* peer, sf::Uint8 status) {
 	enjPacket p;
 	p << (sf::Uint16)C_LOGIN_USER << status; // Отправляем сообщение об авторизации
@@ -109,10 +108,17 @@ void PacketManager::c_login_user(Peer* peer, sf::Uint8 status) {
 void PacketManager::c_login_user(Peer* peer, enjPacket& p) {
 	// TODO: ПРОВЕРКА АВТОРИЗАЦИОННЫЙ ДАННЫХ, ЕСЛИ ХУЕВЫЕ - ОТКЛЮЧАЕМ В ПИЗДУ
 	if (peer->getStatus() == Peer::logged_in) return; // Если клиент уже авторизован - нахуй он шлет нам эту ебанину?
+	
 	std::wstring username;
 	std::string password;
 
 	if (!(p >> username >> password)) return;
+
+	// Если такой юзер уже авторизован - не принимаем авторизацию
+	if(getServer()->isUsernameConnected(username)) {
+		peer->disconnect();
+		return;
+	}
 
 	DBManager* dbmngr = getServer()->getDBManager();
 	Logger* log = getServer()->getLogger();
@@ -131,6 +137,8 @@ void PacketManager::c_login_user(Peer* peer, enjPacket& p) {
 
 	dbmngr->set_user_last_ip(username, ip);
 	peer->setStatus(Peer::status::logged_in);
+	peer->setUsername(username);
+
 	c_login_user(peer, P_SUCCESS); // Отправляем пакет клиенту что он авторизован
 
 	log->info(std::format(L"[u+] User {} - {}:{}, has successful login", username, to_wide(ip), port).c_str());
