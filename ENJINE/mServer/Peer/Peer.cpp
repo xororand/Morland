@@ -42,7 +42,7 @@ void Peer::process() {
 	// якхьйнл лмнцн меондундъыху он опнрнйнкс гюопнянб 
 	if (unk_packets_c >= MAX_UNK_PACKETS)				{ setDisconnectReason(L"UNK Packets limit"); setStatus(status::disconnected); }
 	// лмнцн месдювмшу оношрнй гюкнцхмхрэяъ
-	if (failed_logins_c >= MAX_FAILED_LOGINS)			{ setDisconnectReason(L"Login failed");		setStatus(status::disconnected); }
+	if (failed_logins_c >= MAX_FAILED_LOGINS)			{ setDisconnectReason(L"Failed logins limit");		setStatus(status::disconnected); }
 	// еякх днкцне бпелъ опхундхкх рнкэйн PING оюйерш - ютй TIMEOUT
 	if (lnpp_timeout >= MAX_ONLY_PING_PACKETS_TIMEOUT && getStatus() == logged_in)	{ setDisconnectReason(L"AFK"); setStatus(status::disconnected); }
 	// нрйкчвюел он опхвхме ярюрсяю

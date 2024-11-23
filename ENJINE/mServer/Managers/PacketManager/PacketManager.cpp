@@ -79,33 +79,34 @@ void PacketManager::c_ping(Peer* peer, enjPacket& p) {
 // TODO: REGISTER USER
 void PacketManager::c_register_user(Peer* peer, sf::Uint8 status) {
 	enjPacket p;
-	p << status; // Отправляем сообщение об регистрации
+	p << (sf::Uint16)C_REGISTER_USER << status; // Отправляем сообщение об состоянии регистрации
 	send_packet(peer, p);
 }
 void PacketManager::c_register_user(Peer* peer, enjPacket& p) {
 	std::wstring username;
 	std::wstring password;
 
-	if (!(p >> username >> password)) return;
+	if ( !(p >> username >> password) ) return;
 
 	DBManager* dbmngr = getServer()->getDBManager();
 	Logger* log = getServer()->getLogger();
 
-	DBManager::error er =  dbmngr->add_user(peer, username, password);
-	if (er != DBManager::error::success) {
+	DBManager::error er = dbmngr->add_user(peer, username, password);
+	if (er != DBManager::error::success) { 
 		c_register_user(peer, (sf::Uint8)P_FAIL);
+		return;
 	}
 
 	c_register_user(peer, (sf::Uint8)P_SUCCESS);
-	std::string ip = peer->getTcp()->getRemoteAddress().toString();
-	auto port = peer->getTcp()->getLocalPort();
+	std::string ip	= peer->getTcp()->getRemoteAddress().toString();
+	auto port		= peer->getTcp()->getLocalPort();
 
 	log->info(std::format(L"[u+] User {} - {}:{}, has successful registered", username, to_wide(ip), port).c_str());
 }
 
 void PacketManager::c_login_user(Peer* peer, sf::Uint8 status) {
 	enjPacket p;
-	p << (sf::Uint16)C_LOGIN_USER << status; // Отправляем сообщение об авторизации
+	p << (sf::Uint16)C_LOGIN_USER << status; // Отправляем сообщение об состоянии авторизации
 	send_packet(peer, p);
 }
 void PacketManager::c_login_user(Peer* peer, enjPacket& p) {
@@ -113,7 +114,7 @@ void PacketManager::c_login_user(Peer* peer, enjPacket& p) {
 	if (peer->getStatus() == Peer::logged_in) return; // Если клиент уже авторизован - нахуй он шлет нам эту ебанину?
 	
 	std::wstring username;
-	std::string password;
+	std::wstring password;
 
 	if (!(p >> username >> password)) return;
 
@@ -126,7 +127,7 @@ void PacketManager::c_login_user(Peer* peer, enjPacket& p) {
 	DBManager* dbmngr = getServer()->getDBManager();
 	Logger* log = getServer()->getLogger();
 
-	std::string passhash = Utils::hashing::sha256(password);
+	std::string passhash = Utils::hashing::sha256(to_ancii(password));
 
 	bool is_auth = dbmngr->is_user_auth(username, passhash);
 	if (!is_auth) {

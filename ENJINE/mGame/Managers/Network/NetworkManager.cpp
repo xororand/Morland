@@ -1,5 +1,6 @@
 #include "NetworkManager.h"
 #include "mGame/Game.h"
+#include "mServer/Managers/DBManager/DBManager.h"
 
 NetworkManager::NetworkManager(Game* game) {
 	m_game = game;
@@ -11,7 +12,6 @@ void NetworkManager::process()
 	// ПРОИЗОШЛА ОШИБКА СОЕДИНЕНИЯ - ПЕРЕХОДИМ В ОКНО ПОДКЛЮЧЕНИЯ
 	if (getGame()->getSceneManager()->getCurrentScene()->getType() != Scene::LauncherScene and getStatus() == connection_failed) {
 		setLastErrMsg(L"");
-		isAuthed(false);
 		getGame()->getSceneManager()->setScene(Scene::LauncherScene, L"Morland Launcher");
 	}
 	// ЕСЛИ МЫ НЕ ПОДКЛЮЧЕНЫ К СЕРВЕРУ - ПРОПУСК ЭТОЙ ФУНКЦИИ
@@ -54,7 +54,8 @@ void NetworkManager::process_packet()
 }
 
 /*
-* Отправка пакета с проверкой на валидную отправку
+Отправка пакета с системой автоматического досыла в случае его потери.
+В случае если была ошибка сети - пакет не дойдет.
 */
 void NetworkManager::send_packet(enjPacket p)
 {
@@ -84,28 +85,53 @@ void NetworkManager::c_ping() {
 void NetworkManager::c_register_user(enjPacket& p)
 {
 	sf::Uint8 status = 0;
-	p << status;
+	p >> status;
 	if (status == P_SUCCESS) {
-		is_auth = true;
+		is_registered_this_session = true;
+		setLastErrMsg(L"Registration is success!");
 	}
 	else {
-		// 
+		setLastErrMsg(L"Registration failed.");
 	}
+}
+void NetworkManager::c_register_user(std::wstring username, std::wstring password, std::wstring password2)
+{
+	if (is_registered_this_session) {
+		setLastErrMsg(L"You have already registered this session!");
+		return;
+	}
+	if (username.size() > 256) { 
+		setLastErrMsg(L"Username len is too much!");
+		return; 
+	}
+	if (password.size() > 1024) {
+		setLastErrMsg(L"Password len is too much!");
+		return;
+	}
+	if (password != password2) {
+		setLastErrMsg(L"Passwords are not the same!");
+		return;
+	}
+	if (!DBManager::isStringAllowed(username)) {
+		setLastErrMsg(L"Impossible chars in username!");
+		return;
+	}
+	enjPacket p;
+	p << (sf::Uint16)C_REGISTER_USER << username << password;
+	send_packet(p);
 }
 void NetworkManager::c_login_user(enjPacket& p)
 {
 	sf::Uint8 status = 0;
 	p >> status;
 	if (status == P_SUCCESS) {
-		is_auth = true;
+		getGame()->getSceneManager()->setScene(Scene::WorldScene, L"Morland World");
 	}
 	else {
 		setLastErrMsg(L"Authentication failed.");
-		is_auth = false;
 	}
 }
-void NetworkManager::c_login_user(std::wstring username, std::string password)
-{
+void NetworkManager::c_login_user(std::wstring username, std::wstring password) {
 	if (username.size() > 256 || password.size() > 1024) return;
 	enjPacket p;
 	p << (sf::Uint16)C_LOGIN_USER << username << password;

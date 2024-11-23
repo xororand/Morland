@@ -33,7 +33,7 @@ public:
 
 	void set_user_last_ip(std::wstring username, std::string lastip);
 
-	error add_user(Peer* peer, std::wstring username, std::wstring passhash);
+	error add_user(Peer* peer, std::wstring username, std::wstring password);
 
 };
 

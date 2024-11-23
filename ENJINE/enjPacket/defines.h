@@ -23,4 +23,4 @@
 */
 #define C_PING				0
 #define C_REGISTER_USER		1 // [wstr]username, [wstr]password
-#define C_LOGIN_USER		2 // [wstr]username, [str]passhash
+#define C_LOGIN_USER		2 // [wstr]username, [wstr]password

@@ -10,8 +10,9 @@ using namespace Utils::encoding;
 
 LauncherScene::LauncherScene(Game* game) {
 	setType(Scene::LauncherScene);
-	this->setPage(main);
 	setGame(game);
+	setPage(main);
+	
 
 	RenderWindow* rw = getGame()->getRenderWindow();
 
@@ -22,7 +23,7 @@ LauncherScene::LauncherScene(Game* game) {
 	if (!getGame()->getSceneManager()->isRWinit()) {
 		getGame()->getSceneManager()->isRWinit(true);
 
-		rw->create(sf::VideoMode(800, 500), "", sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
+		rw->create(sf::VideoMode(800, 500), "", sf::Style::Titlebar | sf::Style::Close);
 		rw->setFramerateLimit(144);
 		rw->setVerticalSyncEnabled(true);
 
@@ -111,8 +112,8 @@ void LauncherScene::drawLogin()
 	float screen_weight = rw->getSize().x;
 	float screen_height = rw->getSize().y;
 
-	ImGui::SetNextWindowSize(ImVec2(screen_weight / 2.84f, screen_height / 3.16f));
-	ImGui::SetNextWindowPos(ImVec2(screen_weight / 2 - (screen_weight / 2.84f) / 2, screen_height / 2 - (screen_height / 2.16f) / 5));
+	ImGui::SetNextWindowSize(ImVec2(screen_weight / 2.5f, screen_height / 2.16f));
+	ImGui::SetNextWindowPos(ImVec2(screen_weight / 2 - (screen_weight / 2.5f) / 2, screen_height / 2 - (screen_height / 2.16f) / 5));
 	if (ImGui::Begin("login_menu", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDecoration)) {
 		std::wstring welcome_text	= L"Welcome to our server !";
 		std::wstring login_text		= L"Login:";
@@ -122,7 +123,69 @@ void LauncherScene::drawLogin()
 		ImGui::Text(to_ancii(welcome_text));
 
 		ImGui::Separator();
-		std::wstring error_msg = getGame()->getNetworkManager()->getLastErrMsg();
+		std::wstring error_msg = nm->getLastErrMsg();
+		ImGui::SetCursorPosX(ImGui::CalcTextSize(to_ancii(error_msg)).x / 2.0f - 10.0f);
+		ImGui::Text(to_ancii(error_msg));
+		if (ImGui::BeginChild(2, ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y))) {
+			ImGui::SetCursorPosX(10.0f);
+			ImGui::Text(to_ancii(login_text)); ImGui::SameLine();
+			ImGui::SetCursorPosX(ImGui::CalcTextSize(to_ancii(password_text)).x + 10.0f);
+			static char login_input[256] = "";
+			ImGui::InputText("##login_input", login_input, IM_ARRAYSIZE(login_input));
+
+			ImGui::SetCursorPosX(5.0f);
+			ImGui::Text(to_ancii(password_text)); ImGui::SameLine();
+			ImGui::SetCursorPosX(ImGui::CalcTextSize(to_ancii(password_text)).x + 10.0f);
+			static char password_input[1024] = "";
+			ImGui::InputText("##password_input", password_input, IM_ARRAYSIZE(password_input), ImGuiInputTextFlags_Password);
+
+			//ImGui::SetCursorPosY(5.0f);
+
+			ImGui::Separator();
+
+			std::string enter_text		= "ENTER";
+			std::string register_text	= "REGISTER";
+			std::string back_text		= "BACK";
+
+			ImGui::SetCursorPosX(ImGui::CalcTextSize(to_ancii(password_text)).x /2.0f);
+			//ImGui::SetCursorPosX(screen_weight / 2.84f / 2.0f - (ImGui::CalcTextSize(enter_text.c_str()).x + ImGui::CalcTextSize(back_text.c_str()).x));
+			if (ImGui::Button(enter_text.c_str(), ImVec2(75.0f, 25.0f))) {
+				nm->c_login_user( to_wide(login_input), to_wide(password_input) );
+			} ImGui::SameLine();
+			if (ImGui::Button(register_text.c_str(), ImVec2(75.0f, 25.0f))) {
+				setPage(registration);
+			} ImGui::SameLine();
+			if (ImGui::Button(back_text.c_str(), ImVec2(75.0f, 25.0f))) {
+				nm->setLastErrMsg(L"");
+				nm->disconnect();
+				setPage(main);
+			}
+			ImGui::EndChild();
+		}
+		ImGui::End();
+	}
+}
+void LauncherScene::drawRegistration()
+{
+	RenderWindow* rw = getGame()->getRenderWindow();
+	NetworkManager* nm = getGame()->getNetworkManager();
+
+	float screen_weight = rw->getSize().x;
+	float screen_height = rw->getSize().y;
+
+	ImGui::SetNextWindowSize(ImVec2(screen_weight / 2.84f, screen_height / 3.16f));
+	ImGui::SetNextWindowPos(ImVec2(screen_weight / 2 - (screen_weight / 2.84f) / 2, screen_height / 2 - (screen_height / 2.16f) / 5));
+	if (ImGui::Begin("register_menu", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDecoration)) {
+		std::wstring welcome_text		= L"Please register.";
+		std::wstring login_text			= L"Login:";
+		std::wstring password_text		= L"Password:";
+		std::wstring password2_text		= L"Repeat password:";
+
+		ImGui::SetCursorPosX(ImGui::CalcTextSize(to_ancii(welcome_text)).x / 2.0f - 10.0f);
+		ImGui::Text(to_ancii(welcome_text));
+
+		ImGui::Separator();
+		std::wstring error_msg = nm->getLastErrMsg();
 		ImGui::SetCursorPosX(ImGui::CalcTextSize(to_ancii(error_msg)).x / 2.0f - 10.0f);
 		ImGui::Text(to_ancii(error_msg));
 		if (ImGui::BeginChild(2, ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y))) {
@@ -137,6 +200,11 @@ void LauncherScene::drawLogin()
 			static char password_input[1024] = "";
 			ImGui::InputText("##password_input", password_input, IM_ARRAYSIZE(password_input), ImGuiInputTextFlags_Password);
 
+			ImGui::Text(to_ancii(password2_text)); ImGui::SameLine();
+			ImGui::SetCursorPosX(ImGui::CalcTextSize(to_ancii(password2_text)).x + 10.0f);
+			static char password2_input[1024] = "";
+			ImGui::InputText("##password2_input", password2_input, IM_ARRAYSIZE(password2_input), ImGuiInputTextFlags_Password);
+
 			//ImGui::SetCursorPosY(5.0f);
 
 			ImGui::Separator();
@@ -147,29 +215,21 @@ void LauncherScene::drawLogin()
 			ImGui::SetCursorPosX(ImGui::CalcTextSize(to_ancii(password_text)).x + 10.0f);
 			//ImGui::SetCursorPosX(screen_weight / 2.84f / 2.0f - (ImGui::CalcTextSize(enter_text.c_str()).x + ImGui::CalcTextSize(back_text.c_str()).x));
 			if (ImGui::Button(enter_text.c_str(), ImVec2(75.0f, 25.0f))) {
-				nm->c_login_user(to_wide(login_input), password_input);
+				nm->c_register_user( to_wide(login_input), to_wide(password_input), to_wide(password2_input));
 			} ImGui::SameLine();
 			if (ImGui::Button(back_text.c_str(), ImVec2(75.0f, 25.0f))) {
-				nm->disconnect();
-				setPage(main);
+				nm->setLastErrMsg(L"");
+				setPage(login);
 			}
 			ImGui::EndChild();
 		}
 		ImGui::End();
 	}
 }
-void LauncherScene::drawRegistration()
-{
-}
 
 void LauncherScene::onProcess() {
 	NetworkManager* nm = getGame()->getNetworkManager();
 	RenderWindow* rw = getGame()->getRenderWindow();
-
-	if (nm->isAuthed()) {
-		getGame()->getSceneManager()->setScene(Scene::WorldScene);
-		getGame()->getSceneManager()->setSceneName(L"Morland World");
-	}
 
 	if (nm->getStatus() == NetworkManager::connection_done && getPage() == main) {
 		// Мы успешно подключились к серверу
@@ -185,11 +245,6 @@ void LauncherScene::onProcess() {
 	} 
 	if (nm->getStatus() != NetworkManager::connection_done && getPage() != main) {
 		setPage(main);
-	}
-	if(nm->getStatus() == NetworkManager::connection_failed) {
-		// Ошибка при подключении, скорее всего были исчерпаны попытки подключения
-		
-		return;
 	}
 }
 void LauncherScene::onDraw() {

@@ -136,24 +136,22 @@ void DBManager::set_user_last_ip(std::wstring username, std::string lastip)
 }
 
 /* false - юзер уже существует, true - учетная запись была создана */
-DBManager::error DBManager::add_user(Peer* peer, std::wstring username, std::wstring passhash)
+DBManager::error DBManager::add_user(Peer* peer, std::wstring username, std::wstring password)
 {
-    if (username.size() > 256) return str_size_not_allowed;
-    if (!isStringAllowed(username) or !isStringAllowed(passhash)) return chars_not_allowed;
+    if (username.size() > 256)      return str_size_not_allowed;
+    if (password.size() > 1024)     return str_size_not_allowed;
+    if (!isStringAllowed(username)) return chars_not_allowed;
 
-    if (is_user_exists(username)) return not_exists;
+    if (is_user_exists(username))   return not_exists;
 
-    /*
-        passhash отправлен от клиента, его требуется проверить на действительность хэша sha256    
-    */
-
-    //std::string passhash = to_ancii(Utils::hashing::sha256(passhash));
+    std::string passhash = to_ancii(Utils::hashing::sha256(password));
     std::string ip = peer->getTcp()->getRemoteAddress().toString();
 
-    std::string query = std::format("INSERT INTO users (username, password, regIP, lastIP) VALUES ("
-    "{}, {})", to_ancii(username), to_ancii(passhash), ip, ip);
+    std::string query = std::format("INSERT INTO `users` (`username`, `password`, `regIP`, `lastIP`) VALUES "
+    "('{}','{}','{}','{}')", to_ancii(username), passhash, ip, ip);
 
     if (sqlite3_exec(m_db, query.c_str(), NULL, NULL, NULL) != SQLITE_OK) {
+        int error = sqlite3_errcode(m_db);
         return not_success;
     }
 
