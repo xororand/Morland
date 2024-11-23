@@ -42,6 +42,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Managers\DBManager\DBManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Managers\WorldManager\WorldManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Managers\S_Manager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utils\hashes\sha256.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Logger\Logger.h">
@@ -77,5 +78,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Managers\WorldManager\WorldManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Managers\S_Manager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\defines.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utils\hashes\sha256.h" />
   </ItemGroup>
 </Project>

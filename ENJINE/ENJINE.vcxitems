@@ -29,6 +29,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Object\mServer\S_RootObj\S_RootObj.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Object\mServer\S_PlayerObj\S_PlayerObj.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mServer\Managers\S_Manager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utils\hashes\sha256.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Logger\Logger.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Network\NetworkManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mGame\Managers\Scene\SceneManager.h" />
@@ -58,6 +59,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Object\mServer\S_RootObj\S_RootObj.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Object\mServer\S_PlayerObj\S_PlayerObj.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mServer\Managers\S_Manager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utils\hashes\sha256.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utils\Logger\Logger.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Managers\Network\NetworkManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)mGame\Managers\Scene\Scene.cpp" />

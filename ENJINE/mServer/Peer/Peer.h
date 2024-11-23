@@ -45,6 +45,7 @@ private:
 	long long ping_ms = 0;
 
 	int unk_packets_c = 0;
+	int failed_logins_c = 0;
 
 	status m_status = not_verifed;
 	std::wstring disconnect_reason = L"Unknown";
@@ -67,7 +68,8 @@ public:
 	long long getPingMS()				{ return ping_ms;	}
 	void setPingMS(long long ms)		{ ping_ms = ms;		}
 	
-	void addUnkPacket()					{ unk_packets_c++;	}
+	void addUnkPacket()					{ unk_packets_c++;		}
+	void addFailedLogin()				{ failed_logins_c++;	}
 
 	TcpSocket*		getTcp()								{ return m_tcp; }
 	void			setStatus(status s)						{ m_status = s; }

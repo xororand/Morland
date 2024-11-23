@@ -31,13 +31,16 @@ void Peer::process() {
 	// ÌÀÊÑÈÌÀËÜÍÎÅ ÂÎÇÌÎÆÍÎÅ ÂÐÅÌß ÄËß ÂÂÎÄÀ ÏÀÐÎËß/ËÎÃÈÍÀ
 	if (getStatus() != logged_in and fc_timeout >= MAX_UNLOGED_PEER_TIME_CONNECTED) { setDisconnectReason(L"Logins time expired"); setStatus(status::disconnected); }
 	// ÒÀÉÌÀÓÒ ÈÑÒÅÊ
-	if (lp_timeout > MAX_PEER_TIMEOUT)		{ setDisconnectReason(L"TIMEOUT"); setStatus(status::disconnected); }
+	if (lp_timeout > MAX_PEER_TIMEOUT)			{ setDisconnectReason(L"TIMEOUT"); setStatus(status::disconnected); }
 	// ÑËÈØÊÎÌ ÁÎËÜØÎÉ ÏÈÍÃ
-	if (ping_ms >= MAX_PEER_PING)			{ setDisconnectReason(L"HIGH PING"); setStatus(status::disconnected); }
+	if (ping_ms >= MAX_PEER_PING)				{ setDisconnectReason(L"HIGH PING"); setStatus(status::disconnected); }
 	// ÑËÈØÊÎÌ ÌÍÎÃÎ ÍÅÏÎÄÕÎÄßÙÈÕ ÏÎ ÏÐÎÒÎÊÎËÓ ÇÀÏÐÎÑÎÂ 
-	if (unk_packets_c >= MAX_UNK_PACKETS)	{ setDisconnectReason(L"UNK Packets limit"); setStatus(status::disconnected); }
+	if (unk_packets_c >= MAX_UNK_PACKETS)		{ setDisconnectReason(L"UNK Packets limit"); setStatus(status::disconnected); }
+	// ÌÍÎÃÎ ÍÅÓÄÀ×ÍÛÕ ÏÎÏÛÒÎÊ ÇÀËÎÃÈÍÈÒÜÑß
+	if (failed_logins_c >= MAX_FAILED_LOGINS)	{ setDisconnectReason(L"Login failed"); setStatus(status::disconnected); }
 	// ÎÒÊËÞ×ÀÅÌ ÏÎ ÏÐÈ×ÈÍÅ ÑÒÀÒÓÑÀ
 	if (this->getStatus() == Peer::status::disconnected) { disconnect(); return; }
+
 	// ÏÈÍÃÓÅÌ ÊËÈÅÍÒÀ ÊÀÆÄÛÅ n ÑÅÊÓÍÄ
 	if (lpp_timeout >= SERVER_PING_PEER_DELAY) ping();
 

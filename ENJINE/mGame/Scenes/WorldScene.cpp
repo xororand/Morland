@@ -13,14 +13,23 @@ WorldScene::WorldScene(Game* game) {
 
 	ui = std::make_shared<UI>(getGame());
 	
-	rw->create(sf::VideoMode(801, 501), "", sf::Style::Titlebar | sf::Style::Close);
-	rw->setFramerateLimit(144);
-	rw->setVerticalSyncEnabled(true);
-
 	if (!getGame()->getSceneManager()->isRWinit()) {
 		getGame()->getSceneManager()->isRWinit(true);
+
+		rw->create(sf::VideoMode(800, 501), "", sf::Style::Titlebar | sf::Style::Close);
+		rw->setFramerateLimit(144);
+		rw->setVerticalSyncEnabled(true);
+
 		ImGui::SFML::Init(*rw);
 	}
+}
+
+void WorldScene::drawMain(Time delta_t)
+{
+	ImGui::ShowDemoWindow();
+
+	ui->drawVersion();
+	//ui->drawBackgroundSpaceCircleEffect(delta_t.asSeconds());
 }
 
 void WorldScene::onProcess() {
@@ -38,10 +47,11 @@ void WorldScene::onDraw() {
 	// Отрисовка всех объектов из рута
 	m_root.draw(*rw);
 
-	ImGui::ShowDemoWindow();
+	switch (getPage()) {
 
-	ui->drawVersion();
-	ui->drawBackgroundSpaceCircleEffect(delta_t.asSeconds());
+	case main:	drawMain(delta_t);	break;
+
+	}
 
 	ImGui::SFML::Render(*rw);
 	rw->display();

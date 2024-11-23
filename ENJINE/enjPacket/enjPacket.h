@@ -10,6 +10,7 @@ class enjPacket : public sf::Packet
 {
 private:
     bool m_is_valid = true;
+    std::vector<sf::Uint8> sentdata;
 public:
     bool verife_packet(const void* data, size_t size);
 

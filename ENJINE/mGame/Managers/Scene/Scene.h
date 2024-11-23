@@ -10,24 +10,28 @@ class SceneManager;
 
 class Scene
 {
-private:
-    std::wstring m_name = L"";
-
-    Game* m_game        = nullptr;
 public:
     enum Type {
         LauncherScene,
         WorldScene
     };
+private:
+    std::wstring m_name = L"";
 
-    void setGame(Game* game) { m_game = game; }
-    Game* getGame() { return m_game; }
+    Game* m_game = nullptr;
+    int m_current_page = 0;
+public:
+    void setGame(Game* game)        { m_game = game; }
+    Game* getGame()                 { return m_game; }
 
-    Scene::Type getType()       { return m_type; }
-    void setType(Scene::Type t) { m_type = t; }
+    Scene::Type getType()           { return m_type; }
+    void setType(Scene::Type t)     { m_type = t; }
 
-    std::wstring getName() { return m_name; }
+    std::wstring getName()          { return m_name; }
     void setName(std::wstring name);
+
+    void setPage(int page)         { m_current_page = page; }
+    int getPage()                  { return m_current_page; }
 
     void process() {
         this->onProcess();

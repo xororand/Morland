@@ -83,18 +83,19 @@ void Server::addPeer(TcpSocket* sock) {
         m_peers[idx] = p;
     } 
     getLogger()->info(std::format(L"[p+] {}:{} New connection...",
-        Utils::encoding::to_wide(sock->getRemoteAddress().toString()),
+        Utils::encoding::to_multibytes(sock->getRemoteAddress().toString()),
         sock->getRemotePort()).c_str());
 }
 void Server::disconnectPeer(size_t idx) {
     if (!isPeerExists(idx)) return;
     
     getLogger()->info(std::format(L"[p-] {}:{} disconnected by {}",
-        Utils::encoding::to_wide(m_peers[idx]->getTcp()->getRemoteAddress().toString()),
+        Utils::encoding::to_multibytes(m_peers[idx]->getTcp()->getRemoteAddress().toString()),
         m_peers[idx]->getTcp()->getRemotePort(),
         m_peers[idx]->getDisconnectReason()
     ).c_str());
 
+    m_peers[idx]->setStatus(Peer::status::disconnected);
     m_peers[idx]->getTcp()->disconnect();
 
     delete m_peers[idx];

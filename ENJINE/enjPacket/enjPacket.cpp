@@ -17,7 +17,7 @@ bool enjPacket::verife_packet(const void* data, size_t size)
 	sf::Uint8 majver;
 	sf::Uint8 minver;
 	sf::Uint8 pathver;
-	sf::Uint8 c_p;
+	sf::Uint16 c_p;
 
 	p >> h_b >> majver >> minver >> pathver >> c_p;
 
@@ -38,20 +38,19 @@ const void* enjPacket::onSend(std::size_t& size)
     const void* srcData = getData();
     std::size_t srcSize = getDataSize();
 
-    sf::Uint8* data = new sf::Uint8[srcSize + 5];
+    //sentdata = new sf::Uint8[srcSize + 5];
 
-    data[0] = (sf::Uint8)P_HEAD;
-    data[1] = (sf::Uint8)MAJOR_VER;
-    data[2] = (sf::Uint8)MINOR_VER;
-    data[3] = (sf::Uint8)PATCH_VER;
+	sentdata.push_back((sf::Uint8)P_HEAD);
+	sentdata.push_back((sf::Uint8)MAJOR_VER);
+	sentdata.push_back((sf::Uint8)MINOR_VER);
+	sentdata.push_back((sf::Uint8)PATCH_VER);
 
-    for (int i = 0; i < srcSize; i++)
-        data[i + 4] = ((const char*)srcData)[i];
+	for (int i = 0; i < srcSize; i++)
+		sentdata.push_back((sf::Uint8)((const char*)srcData)[i]);
 
-    data[srcSize + 5] = (sf::Uint8)P_END;
-
-    size = srcSize + 5;
-    return (const void*)data;
+	sentdata.push_back((sf::Uint8)P_END);
+    size = sentdata.size();
+    return (const void*)sentdata.data();
 }
 
 void enjPacket::onReceive(const void* data, std::size_t size)
@@ -60,9 +59,8 @@ void enjPacket::onReceive(const void* data, std::size_t size)
 		m_is_valid = false;
 		return; 
 	}
+	std::string newdata = "";
+	for (int i = 4; i < size; i++) newdata += ((const char*)data)[i];
 
-	char* newdata = new char[size - 5];
-	for (int i = 4; i < size; i++) newdata[i - 4] = ((const char*)data)[i];
-
-    append(newdata, size - 5);
+    append(newdata.c_str(), size - 5);
 }

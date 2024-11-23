@@ -1,4 +1,5 @@
 ﻿#include "Utils.h"
+#include "hashes/sha256.h"
 
 #include "intrin.h"
 #include <Windows.h>
@@ -13,7 +14,7 @@ std::string Utils::encoding::to_utf8(const std::wstring& wstr)
     WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
     return strTo;
 }
-std::wstring Utils::encoding::to_wide(const std::string& str)
+std::wstring Utils::encoding::to_multibytes(const std::string& str)
 {
     if (str.empty()) return std::wstring();
     int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
@@ -21,6 +22,24 @@ std::wstring Utils::encoding::to_wide(const std::string& str)
     MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
     return wstrTo;
 }
+
+// ==================== HASHING ====================
+
+std::wstring Utils::hashing::sha256(std::wstring text)
+{
+    SHA256 sha;
+    sha.update(Utils::encoding::to_utf8(text));
+    std::array<uint8_t, 32> digest = sha.digest();
+    return Utils::encoding::to_multibytes(SHA256::toString(digest));
+}
+std::string Utils::hashing::sha256(std::string text)
+{
+    SHA256 sha;
+    sha.update(text);
+    std::array<uint8_t, 32> digest = sha.digest();
+    return SHA256::toString(digest);
+}
+
 
 
 // ==================== STRINGS ====================
@@ -112,3 +131,4 @@ std::wstring Utils::string::replace( std::wstring s, char c1, char c2)
 //    screen_weight = desktop.right;
 //    screen_height = desktop.bottom;
 //}
+
