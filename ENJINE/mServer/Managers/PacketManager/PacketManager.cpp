@@ -34,6 +34,9 @@ int PacketManager::process_packet(Peer* peer) {
 
 	p >> p_c;
 
+	// НУЖНО ДЛЯ СИСТЕМЫ AFK
+	if (p_c != (sf::Uint16)C_PING) peer->setLastNotPingPacketReceive(time(0));
+
 	// TODO: БОЛЕЕ УДОБНУЮ ВЫБОРКУ команда = функция
 	switch ( p_c ) {
 
@@ -136,8 +139,10 @@ void PacketManager::c_login_user(Peer* peer, enjPacket& p) {
 	auto port = peer->getTcp()->getLocalPort();
 
 	dbmngr->set_user_last_ip(username, ip);
+	peer->setLastNotPingPacketReceive(time(0)); // Обнуляем счетчик AFK системы
 	peer->setStatus(Peer::status::logged_in);
 	peer->setUsername(username);
+	
 
 	c_login_user(peer, P_SUCCESS); // Отправляем пакет клиенту что он авторизован
 

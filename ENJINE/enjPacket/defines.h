@@ -4,10 +4,11 @@
 #define SERVER_DEF_PORT						55055
 #define SERVER_PROCESS_THREADS_COUNT		std::thread::hardware_concurrency()
 #define SERVER_PING_PEER_DELAY				2		// סוך
-#define MAX_TPS								60.0	// 1סוך / 60
+#define MAX_TPS								60.0	// TPS
 #define MAX_PEER_PING						5000	// MS
 #define MAX_PEER_TIMEOUT					10		// סוך
 #define MAX_UNLOGED_PEER_TIME_CONNECTED		300		// סוך
+#define MAX_ONLY_PING_PACKETS_TIMEOUT		1800
 #define MAX_UNK_PACKETS						20		// ״ׂ
 #define MAX_FAILED_LOGINS					10		// ״ׂ
 

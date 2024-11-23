@@ -42,6 +42,7 @@ private:
 	time_t first_connect_t;
 	time_t last_packet_t;
 	time_t last_ping_t;
+	time_t last_not_ping_packet_t;
 
 	system_clock::time_point ping_sent_t;
 	long long ping_ms = 0;
@@ -70,11 +71,12 @@ public:
 	void disconnect();
 	void ping();
 
-	long long getPingMS()				{ return ping_ms;	}
-	void setPingMS(long long ms)		{ ping_ms = ms;		}
+	long long getPingMS()							{ return ping_ms;	}
+	void setPingMS(long long ms)					{ ping_ms = ms;		}
 	
-	void addUnkPacket()					{ unk_packets_c++;		}
-	void addFailedLogin()				{ failed_logins_c++;	}
+	void addUnkPacket()								{ unk_packets_c++;		}
+	void addFailedLogin()							{ failed_logins_c++;	}
+	void setLastNotPingPacketReceive(time_t time)	{ last_not_ping_packet_t = time; }
 
 	TcpSocket*		getTcp()								{ return m_tcp; }
 	void			setStatus(status s)						{ m_status = s; }

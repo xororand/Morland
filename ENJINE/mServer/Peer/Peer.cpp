@@ -6,6 +6,8 @@ Peer::Peer(size_t idx, Server* serv, TcpSocket* tcp) {
 
 	time(&first_connect_t);
 	time(&last_packet_t);
+	time(&last_ping_t);
+	time(&last_not_ping_packet_t);
 	ping_sent_t = std::chrono::system_clock::now();
 
 	m_server = serv;
@@ -13,7 +15,9 @@ Peer::Peer(size_t idx, Server* serv, TcpSocket* tcp) {
 	m_tcp->setBlocking(false);
 
 	setStatus(status::not_verifed);
-	// TODO: BODY SHAPE DEF
+
+	// ÏÎÑÛËÀÅÌ ÏÐÈÍÓÄËÈÒÅËÜÍÛÉ ÏÈÍÃ ÈÁÎ SERVER_PING_PEER_DELAY ÆÄÀÒÜ ÏÅÐÅÄ ÀÂÒÎÐÈÇÀÖÈÅÉ
+	ping();
 }
 
 Peer::~Peer() {
@@ -27,24 +31,26 @@ void Peer::process() {
 	time_t lp_timeout	= time(0) - last_packet_t;
 	time_t lpp_timeout	= time(0) - last_ping_t;
 	time_t fc_timeout	= time(0) - first_connect_t;
+	time_t lnpp_timeout	= time(0) - last_not_ping_packet_t;
 
 	// ÌÀÊÑÈÌÀËÜÍÎÅ ÂÎÇÌÎÆÍÎÅ ÂÐÅÌß ÄËß ÂÂÎÄÀ ÏÀÐÎËß/ËÎÃÈÍÀ
 	if (getStatus() != logged_in and fc_timeout >= MAX_UNLOGED_PEER_TIME_CONNECTED) { setDisconnectReason(L"Logins time expired"); setStatus(status::disconnected); }
 	// ÒÀÉÌÀÓÒ ÈÑÒÅÊ
-	if (lp_timeout > MAX_PEER_TIMEOUT)			{ setDisconnectReason(L"TIMEOUT"); setStatus(status::disconnected); }
+	if (lp_timeout > MAX_PEER_TIMEOUT)					{ setDisconnectReason(L"TIMEOUT");			setStatus(status::disconnected); }
 	// ÑËÈØÊÎÌ ÁÎËÜØÎÉ ÏÈÍÃ
-	if (ping_ms >= MAX_PEER_PING)				{ setDisconnectReason(L"HIGH PING"); setStatus(status::disconnected); }
+	if (ping_ms >= MAX_PEER_PING)						{ setDisconnectReason(L"HIGH PING");		setStatus(status::disconnected); }
 	// ÑËÈØÊÎÌ ÌÍÎÃÎ ÍÅÏÎÄÕÎÄßÙÈÕ ÏÎ ÏÐÎÒÎÊÎËÓ ÇÀÏÐÎÑÎÂ 
-	if (unk_packets_c >= MAX_UNK_PACKETS)		{ setDisconnectReason(L"UNK Packets limit"); setStatus(status::disconnected); }
+	if (unk_packets_c >= MAX_UNK_PACKETS)				{ setDisconnectReason(L"UNK Packets limit"); setStatus(status::disconnected); }
 	// ÌÍÎÃÎ ÍÅÓÄÀ×ÍÛÕ ÏÎÏÛÒÎÊ ÇÀËÎÃÈÍÈÒÜÑß
-	if (failed_logins_c >= MAX_FAILED_LOGINS)	{ setDisconnectReason(L"Login failed"); setStatus(status::disconnected); }
+	if (failed_logins_c >= MAX_FAILED_LOGINS)			{ setDisconnectReason(L"Login failed");		setStatus(status::disconnected); }
+	// ÅÑËÈ ÄÎËÃÎÅ ÂÐÅÌß ÏÐÈÕÎÄÈËÈ ÒÎËÜÊÎ PING ÏÀÊÅÒÛ - ÀÔÊ TIMEOUT
+	if (lnpp_timeout >= MAX_ONLY_PING_PACKETS_TIMEOUT && getStatus() == logged_in)	{ setDisconnectReason(L"AFK"); setStatus(status::disconnected); }
 	// ÎÒÊËÞ×ÀÅÌ ÏÎ ÏÐÈ×ÈÍÅ ÑÒÀÒÓÑÀ
 	if (this->getStatus() == Peer::status::disconnected) { disconnect(); return; }
 
 	// ÏÈÍÃÓÅÌ ÊËÈÅÍÒÀ ÊÀÆÄÛÅ n ÑÅÊÓÍÄ
 	if (lpp_timeout >= SERVER_PING_PEER_DELAY) ping();
-
-
+	
 	// ÏÐÈÍÈÌÀÅÌ TCP ÏÀÊÅÒÛ
 	Socket::Status tcp_status = (Socket::Status)( serv->getPacketManager()->process_packet(this) );
 

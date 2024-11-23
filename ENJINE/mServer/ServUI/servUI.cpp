@@ -75,7 +75,7 @@ void servUI::drawDebug() {
         std::vector<std::wstring> cols_names {
             L"ID",
             L"PING",
-            L"USERNAME"
+            L"USERNAME",
             L"STATUS",
             L"IP:PORT",
             L""
@@ -102,10 +102,11 @@ void servUI::drawDebug() {
                 ImGui::Text("%d", peer->getID());
 
                 ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%s", peer->getUsername());
+                ImGui::Text("%dms", peer->getPingMS());
 
                 ImGui::TableSetColumnIndex(2);
-                ImGui::Text("%dms", peer->getPingMS());
+                ImGui::Text("%s", to_ancii(peer->getUsername()));
+                
 
                 ImGui::TableSetColumnIndex(3);
                 ImGui::Text("%s", to_ancii(Peer::to_wstring(peer->getStatus())) );
