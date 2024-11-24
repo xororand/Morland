@@ -29,18 +29,28 @@ int Server::run() {
     m_tcp_listener.setBlocking(false);
 
     // Запуск потоков логики сервера
-    for (int i = 0; i < SERVER_PROCESS_THREADS_COUNT; i++) {
+    for (int i = 0; i < SERVER_PROCESS_THREADS_COUNT; i++)
         m_threads.push_back(new std::thread(&Server::thread_process, this, i));
-    }
 
     if (m_threads.size() > 0) getLogger()->info(L"Server started!");
 
     // Запуск обработки UI
     drawUI();
 
-    for (auto t : m_threads) t->join();     // Ждем окончания работы потоков
+    // Ждем окончания работы потоков
+    for (auto t : m_threads) t->join();     
 
-    for (auto p : m_peers) p->disconnect();  // Отключаем каждого игрока
+    // TODO: сохранение состояния мира
+    
+    // при отключении пира удаляется и тело игрока если оно было
+    disconnectAllPeers();
+
+    // Удаляем менеджеры
+    delete m_packetmng;
+    delete m_worldmanager;
+    delete m_dbmanager;
+    delete m_logger;
+    delete m_window;
 
     return 0;
 }
@@ -48,9 +58,7 @@ int Server::run() {
 
 
 
-std::deque<Peer*> Server::getPeers()
-{
-    std::lock_guard<std::mutex> lock(peers_internal_mutex);
+std::deque<Peer*> Server::getPeers() {
     return m_peers;
 }
 void Server::addPeer(TcpSocket* sock) {
@@ -86,23 +94,36 @@ void Server::addPeer(TcpSocket* sock) {
         Utils::encoding::to_multibytes(sock->getRemoteAddress().toString()),
         sock->getRemotePort()).c_str());
 }
-void Server::disconnectPeer(size_t idx) {
-    if (!isPeerExists(idx)) return;
-    
+void Server::delPeer(sf::Uint16 idx) {
+    delp(m_peers[idx])
+}
+void Server::disconnectPeer(sf::Uint16 idx) {
+    std::lock_guard<std::mutex> lock(peers_internal_mutex);
+    if ( !isPeerExists(idx) ) return;
+    Peer* peer = m_peers[idx];
+
     getLogger()->info(std::format(L"[p-] {}:{} disconnected by {}",
-        Utils::encoding::to_multibytes(m_peers[idx]->getTcp()->getRemoteAddress().toString()),
-        m_peers[idx]->getTcp()->getRemotePort(),
-        m_peers[idx]->getDisconnectReason()
+        to_wide( peer->getTcp()->getRemoteAddress().toString() ),
+        peer->getTcp()->getRemotePort(),
+        peer->getDisconnectReason()
     ).c_str());
 
-    m_peers[idx]->setStatus(Peer::status::disconnected);
-    m_peers[idx]->getTcp()->disconnect();
+    peer->setStatus(Peer::status::disconnected);
+    peer->getTcp()->disconnect();
 
-    delete m_peers[idx];
-
-    m_peers[idx] = nullptr;
+    // Удаляем из объектов мира
+    getWorldManager()->despawnPlayer(peer);
+    // Удаляем пир и замещаем его нулевой ссылкой
+    delPeer(idx);
 }
-bool Server::isPeerExists(size_t idx)
+void Server::disconnectAllPeers() {
+    for (auto p : getPeers()) {  // Отключаем каждого игрока
+        if (p == nullptr) continue;
+        p->setDisconnectReason(L"disconnectAllPeers");
+        disconnectPeer(p->getID());
+    }
+}
+bool Server::isPeerExists(sf::Uint16 idx)
 {
     // Индекс не может быть больше чем кол-во игроков
     if (idx > getPeers().size())    return false;
@@ -111,9 +132,9 @@ bool Server::isPeerExists(size_t idx)
 
     return true;
 }
-
 bool Server::isUsernameConnected(std::wstring name)
 {
+    std::lock_guard<std::mutex> lock(peers_internal_mutex);
     std::deque<Peer*> peers = getPeers();
     for (int i = 0; i < peers.size(); i++) {
         Peer* peer = peers[i];

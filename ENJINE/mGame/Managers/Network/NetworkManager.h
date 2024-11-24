@@ -49,20 +49,21 @@ public:
 	void disconnect();
 
 	void c_ping();
+
+	void c_register_user(enjPacket& p); // From-server
+	void c_register_user(std::wstring username, std::wstring password, std::wstring password2); // From-server
+
+	/*	Пришел ответ от сервера о нашей успешной или неуспешной авторизации. или он промолчит, если вы прислали рил-хуйню */
+	void c_login_user(enjPacket& p);	// From-server
+	/* Отправка данных для авторизации нашему серверу */
+	void c_login_user(std::wstring username, std::wstring password); // To-server
+
 	// Сообщаем серверу что мы находимся в готовности принимать синхронизацию
 	void c_sync_ready();
 	// Принимаем ответ от сервера
 	void c_sync_ready(enjPacket& p);
 
-	void c_register_user(enjPacket& p); // From-server
-	void c_register_user(std::wstring username, std::wstring password, std::wstring password2); // From-server
-	/*	Пришел ответ от сервера о нашей успешной или неуспешной авторизации
-		Или он промолчит, если вы прислали рил-хуйню */
-	void c_login_user(enjPacket& p);	// From-server
-	/* 
-		Отправка данных для авторизации нашему серверу
-	*/
-	void c_login_user(std::wstring username, std::wstring password); // To-server
+	void c_create_player(enjPacket& p);
 
 	TcpSocket* getTCP() { return m_tcp; }
 
@@ -77,8 +78,6 @@ public:
 
 	int get_connection_trys()	{ return try_connect_count; }
 
-	/*
-	Перед подключением нужно поставить статус pending_connection и указать данные для подключения
-	*/
+	/* Перед подключением нужно поставить статус pending_connection и указать данные для подключения */
 	void connect_server();
 };

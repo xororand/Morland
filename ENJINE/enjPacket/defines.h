@@ -9,8 +9,8 @@
 #define MAX_PEER_TIMEOUT					10		// סוך
 #define MAX_UNLOGED_PEER_TIME_CONNECTED		300		// סוך
 #define MAX_ONLY_PING_PACKETS_TIMEOUT		1800	// סוך הכÿ AFK
-#define MAX_UNK_PACKETS						20		// ״ׂ
-#define MAX_FAILED_LOGINS					10		// ״ׂ
+#define MAX_UNK_PACKETS						20		// ״ׂ | MAX 255
+#define MAX_FAILED_LOGINS					10		// ״ׂ | MAX 255
 
 #define P_HEAD		0xAC
 #define P_END		0xDC
@@ -25,3 +25,6 @@
 #define C_REGISTER_USER		1 // [wstr]username, [wstr]password
 #define C_LOGIN_USER		2 // [wstr]username, [wstr]password
 #define C_SYNC_READY		3
+#define C_CREATE_PLAYER		4 // [Uint16]pid, [wstr]username, X pos, Y pos
+#define C_MOVE_WASD			5 // 
+#define C_SET_PLAYER_POS	6 // [Uint16]pid, X pos, Y pos

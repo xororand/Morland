@@ -1,6 +1,5 @@
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   #include "DBManager.h"
 #include "mServer/Server.h"
-
 #include "mServer/Peer/Peer.h"
 
 DBManager::DBManager(Server* serv) {
@@ -75,7 +74,6 @@ bool DBManager::isStringAllowed(std::wstring str)
 
     return true;
 }
-
 bool DBManager::isStringAllowed(std::string str)
 {
     return isStringAllowed(to_wide(str));
@@ -156,5 +154,36 @@ DBManager::error DBManager::add_user(Peer* peer, std::wstring username, std::wst
     }
 
     return success;
+}
+void DBManager::update_user_pos(S_PlayerObj* pobj, b2Vec2 pos) {
+    Peer* peer = pobj->getPeer();
+
+    // Если пира нет - нет и имени игрока - нельзя записать новые значения в базу
+    if (peer == nullptr) return;
+
+    std::wstring username = peer->getUsername();
+
+    std::string query = std::format("UPDATE users SET lastXpos = '{}', lastYpos = '{}' WHERE username = '{}'", pos.x, pos.y, to_ancii(username));
+    sqlite3_exec(m_db, query.c_str(), NULL, NULL, NULL);
+}
+b2Vec2 DBManager::get_user_pos(Peer* peer)
+{
+    sqlite3_stmt* stmt;
+    int ret = 0;
+
+    std::string query = std::format("SELECT lastXpos, lastYpos FROM users WHERE username = '{}'",
+        to_ancii(peer->getUsername())
+    );
+    ret = sqlite3_prepare_v2(m_db, query.c_str(), query.size(), &stmt, NULL);
+
+    sqlite3_step(stmt);
+
+    float x = (float)sqlite3_column_double(stmt, 0);
+    float y = (float)sqlite3_column_double(stmt, 1);
+
+    b2Vec2 pos = b2Vec2(x, y);
+
+    sqlite3_finalize(stmt);
+    return pos;
 }
                                                                                                                                                                                                                                                                             

@@ -1,8 +1,8 @@
 #include "Peer.h"
 #include "mServer/Server.h"
 
-Peer::Peer(size_t idx, Server* serv, TcpSocket* tcp) {
-	this->idx = idx;
+Peer::Peer(sf::Uint16 idx, Server* serv, TcpSocket* tcp) {
+	this->m_pid = idx;
 
 	time(&first_connect_t);
 	time(&last_packet_t);
@@ -21,7 +21,8 @@ Peer::Peer(size_t idx, Server* serv, TcpSocket* tcp) {
 }
 
 Peer::~Peer() {
-	delete m_tcp;
+	delete m_tcp; m_tcp = nullptr;
+	delete m_playerobj; m_playerobj = nullptr;
 }
 
 // Обработка отдельного пира в 1 ТИК Сервера
@@ -82,7 +83,6 @@ void Peer::disconnect()
 {
 	getServer()->disconnectPeer(this->getID());
 }
-
 void Peer::ping()
 {
 	getServer()->getPacketManager()->c_ping(this);

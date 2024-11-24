@@ -80,7 +80,7 @@ void servUI::drawDebug() {
             L"IP:PORT",
             L""
         };
-
+        
         std::deque<Peer*> peers = getServer()->getPeers();
 
         if (ImGui::BeginTable(to_ancii(L"PLAYERS table"), (int)cols_names.size()))
@@ -94,7 +94,7 @@ void servUI::drawDebug() {
             for (int row = 0; row < peers.size(); row++)
             {
                 Peer* peer = peers[row];
-                if (peer == NULL) continue; // пропуск пустых ячеек, освобожденных после выхода игроков
+                if (peer == nullptr) continue; // пропуск пустых ячеек, освобожденных после выхода игроков
 
                 ImGui::TableNextRow();
 
@@ -106,7 +106,6 @@ void servUI::drawDebug() {
 
                 ImGui::TableSetColumnIndex(2);
                 ImGui::Text("%s", to_ancii(peer->getUsername()));
-                
 
                 ImGui::TableSetColumnIndex(3);
                 ImGui::Text("%s", to_ancii(Peer::to_wstring(peer->getStatus())) );
@@ -118,7 +117,7 @@ void servUI::drawDebug() {
                 ImGui::TableSetColumnIndex(5);
                 if (ImGui::Button("Disconnect")) {
                     peer->setDisconnectReason(L"Admin");
-                    peer->disconnect();
+                    peer->setStatus(Peer::disconnected);
                 }
             }
             ImGui::EndTable();

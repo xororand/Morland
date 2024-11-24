@@ -4,7 +4,7 @@
 #include "mGame/Managers/Network/defines.h"
 
 /*
-* Создает автозаголовок с версией билда и конец пакета
+Создает автозаголовок с версией билда и конец пакета
 */
 class enjPacket : public sf::Packet
 {

@@ -1,4 +1,5 @@
 #pragma once
+#include "version.h"
 
 #include "SFML/Graphics.hpp"
 #include <imgui-SFML.h>
@@ -13,8 +14,6 @@
 #include "Managers/WorldManager/WorldManager.h"
 #include "servUI/servUI.h"
 #include "Peer/Peer.h"
-
-#include "version.h"
 
 #include "windows.h"
 #include <format>
@@ -38,8 +37,8 @@ public:
 		float m_current_tps = 0.0;
 	};
 private:
-	std::vector<std::thread*>			m_threads;
-	std::deque<Peer*>	m_peers;
+	std::vector<std::thread*>	m_threads;
+	std::deque<Peer*>			m_peers;
 
 	bool is_run	= true;
 	servUI*			ui					= nullptr;
@@ -54,7 +53,7 @@ private:
 	TcpListener		m_tcp_listener;
 	float			m_tps_treshold;
 	debug_stats*	d_stats;
-
+public:
 	// MUTEXES
 	std::mutex		tps_mutex;
 	std::mutex		peers_mutex;
@@ -66,8 +65,10 @@ public:
 
 	std::deque<Peer*> getPeers();
 	void addPeer(TcpSocket* sock);
-	void disconnectPeer(size_t idx);
-	bool isPeerExists(size_t idx);
+	void delPeer(sf::Uint16 idx); // Удаляет безопасно пир из массива
+	void disconnectPeer(sf::Uint16 idx);
+	void disconnectAllPeers();
+	bool isPeerExists(sf::Uint16 idx);
 	bool isUsernameConnected(std::wstring name);
 
 	Logger*			getLogger()			{ return m_logger;		}
@@ -77,7 +78,7 @@ public:
 	RenderWindow*	getRenderWindow()	{ return m_window;		}
 
 	float getMaxTPS()					{ return m_tps_treshold;			}
-	void setMaxTPS(float tps);
+	void  setMaxTPS(float tps);
 	float getCurrentTPS()				{ return d_stats->m_current_tps;	}
 	debug_stats* getDebugStats()		{ return d_stats;					}
 private:

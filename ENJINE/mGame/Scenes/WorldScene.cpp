@@ -42,7 +42,7 @@ void WorldScene::onProcess() {
 		nm->c_sync_ready();
 		return;
 	}
-
+	
 }
 
 void WorldScene::onDraw() {

@@ -170,4 +170,25 @@ void PacketManager::c_sync_ready(Peer* peer, enjPacket& p)
 	peer->setStatus(Peer::status::sync_ready);
 	// Отправляем пиру наше добро
 	c_sync_ready(peer);
+
+	S_PlayerObj* pobj = getServer()->getWorldManager()->spawnPlayer(peer);
+	if (pobj == nullptr) return;
+	// Отправляем синхру о создание самого себя
+	c_create_player(pobj);
+}
+
+void PacketManager::c_create_player(S_PlayerObj* pobj) {
+	enjPacket p;
+
+	Peer* peer = pobj->getPeer();
+
+	b2Vec2 pos = b2Body_GetPosition(pobj->getBodyID());
+
+	// Отправляем сообщение об состоянии авторизации
+	p << (sf::Uint16)C_CREATE_PLAYER;
+	p << peer->getID();
+	p << peer->getUsername();
+	p << pos.x << pos.y; 
+
+	send_packet(peer, p);
 }
