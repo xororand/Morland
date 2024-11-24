@@ -72,6 +72,7 @@ std::wstring Peer::to_wstring(status s)
 	case not_verifed:	return L"Not verifed";
 	case verifed:		return L"Verifed";
 	case logged_in:		return L"Logged in";
+	case sync_ready:	return L"SYNC";
 	default:			return L"UNK_STR";
 	}
 	return L"UNK_STR";

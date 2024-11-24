@@ -7,7 +7,7 @@ class WorldScene : public Scene
 {
 public:
 	enum Page {
-		main
+		game
 	};
 private:
 	G_RootObj m_root;
@@ -16,7 +16,7 @@ private:
 public:
 	WorldScene(Game* game);
 
-	void drawMain(Time delta_t);
+	void drawGame(Time delta_t);
 
 	void onProcess();
 	void onDraw();

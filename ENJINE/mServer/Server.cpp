@@ -154,7 +154,7 @@ void Server::process_peers() {
 void Server::drawUI()
 {
     // Draw
-    while (is_run)
+    while (is_run && getRenderWindow()->isOpen())
     {
         ImGui::SFML::Update(*getRenderWindow(), deltaClock.restart());
         getRenderWindow()->clear();
@@ -187,7 +187,7 @@ void Server::tick()
     getWorldManager()->process();
 }
 void Server::thread_process(int id) {
-    while (is_run) {
+    while (is_run && getRenderWindow()->isOpen()) {
         std::lock_guard lock(tps_mutex);
 
         float TFLT = d_stats->m_tps_timer.getElapsedTime().asSeconds();

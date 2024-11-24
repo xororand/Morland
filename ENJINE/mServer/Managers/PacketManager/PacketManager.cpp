@@ -40,9 +40,10 @@ int PacketManager::process_packet(Peer* peer) {
 	// TODO: БОЛЕЕ УДОБНУЮ ВЫБОРКУ команда = функция
 	switch ( p_c ) {
 
-	case C_PING:			c_ping(peer, p); break;
-	case C_REGISTER_USER:	c_register_user(peer, p); break;
-	case C_LOGIN_USER:		c_login_user(peer, p); break;
+	case C_PING:			c_ping(peer, p);			break;
+	case C_REGISTER_USER:	c_register_user(peer, p);	break;
+	case C_LOGIN_USER:		c_login_user(peer, p);		break;
+	case C_SYNC_READY:		c_sync_ready(peer, p);		break;
 
 	default:
 		getServer()->getLogger()->info(
@@ -76,7 +77,6 @@ void PacketManager::c_ping(Peer* peer, enjPacket& p) {
 	}
 }
 
-// TODO: REGISTER USER
 void PacketManager::c_register_user(Peer* peer, sf::Uint8 status) {
 	enjPacket p;
 	p << (sf::Uint16)C_REGISTER_USER << status; // Отправляем сообщение об состоянии регистрации
@@ -148,4 +148,26 @@ void PacketManager::c_login_user(Peer* peer, enjPacket& p) {
 	c_login_user(peer, P_SUCCESS); // Отправляем пакет клиенту что он авторизован
 
 	log->info(std::format(L"[u+] User {} - {}:{}, has successful login", username, to_wide(ip), port).c_str());
+}
+
+void PacketManager::c_sync_ready(Peer* peer) {
+	enjPacket p;
+	p << (sf::Uint16)C_SYNC_READY << P_SUCCESS;
+	send_packet(peer, p);
+}
+void PacketManager::c_sync_ready(Peer* peer, enjPacket& p)
+{
+	if (peer->getStatus() == Peer::sync_ready) return;	// Мы уже синхронизируем пир
+	if (peer->getStatus() != Peer::logged_in) return;	// Синхронизация только для авторизованных
+
+	sf::Uint8 status = P_FAIL;
+
+	if (!(p >> status)) return; // кажись пакет битый - пропуск
+
+	if (status != P_SUCCESS) return; // клиент не прислал свое добро в статусе
+
+	// Выставляем статус на синхронизацию
+	peer->setStatus(Peer::status::sync_ready);
+	// Отправляем пиру наше добро
+	c_sync_ready(peer);
 }

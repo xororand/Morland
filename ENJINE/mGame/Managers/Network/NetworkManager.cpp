@@ -39,9 +39,12 @@ void NetworkManager::process_packet()
 	sf::Uint16 c_p = 0;
 	p >> c_p;
 	switch (c_p) {
+
 	case C_PING:			c_ping();			break;
 	case C_REGISTER_USER:	c_register_user(p); break;
 	case C_LOGIN_USER:		c_login_user(p);	break;
+	case C_SYNC_READY:		c_sync_ready(p);	break;
+
 	default:
 		getGame()->getLogger()->info(
 			std::format(L"UNK Packet Type by {}:{}",
@@ -82,6 +85,21 @@ void NetworkManager::c_ping() {
 	send_packet(p);
 }
 
+void NetworkManager::c_sync_ready()
+{
+	enjPacket p;
+	sf::Uint8 status = P_SUCCESS;
+	p << (sf::Uint16)C_SYNC_READY << status;
+	send_packet(p);
+}
+void NetworkManager::c_sync_ready(enjPacket& p)
+{
+	sf::Uint8 status = P_FAIL;
+	p >> status;
+	if (status == P_SUCCESS)	is_sync = true;
+	else						is_sync = false;
+}
+
 void NetworkManager::c_register_user(enjPacket& p)
 {
 	sf::Uint8 status = 0;
@@ -120,6 +138,7 @@ void NetworkManager::c_register_user(std::wstring username, std::wstring passwor
 	p << (sf::Uint16)C_REGISTER_USER << username << password;
 	send_packet(p);
 }
+
 void NetworkManager::c_login_user(enjPacket& p)
 {
 	sf::Uint8 status = 0;

@@ -16,6 +16,7 @@ public:
 		connection_done,
 		connection_failed,
 	};
+	bool is_sync = false; // Принимаем синхронизацию от сервера
 private:
 	Game* m_game		= nullptr;
 	TcpSocket* m_tcp	= nullptr;
@@ -24,7 +25,7 @@ private:
 
 	// Нужно чтобы не регали несколько аккаунтов в одной сессии, для этого придется перезапускать каждый раз
 	bool is_registered_this_session = false; 
-
+	
 	NetworkManager::Status status		= Status::None;
 
 	int				last_try_time		= 0;
@@ -48,6 +49,10 @@ public:
 	void disconnect();
 
 	void c_ping();
+	// Сообщаем серверу что мы находимся в готовности принимать синхронизацию
+	void c_sync_ready();
+	// Принимаем ответ от сервера
+	void c_sync_ready(enjPacket& p);
 
 	void c_register_user(enjPacket& p); // From-server
 	void c_register_user(std::wstring username, std::wstring password, std::wstring password2); // From-server

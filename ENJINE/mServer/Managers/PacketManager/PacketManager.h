@@ -20,5 +20,8 @@ public:
 
 	void c_login_user(Peer* peer, sf::Uint8 status);	// To-Client
 	void c_login_user(Peer* peer, enjPacket& p);	// From-Client
+
+	void c_sync_ready(Peer* peer);	// To-Client
+	void c_sync_ready(Peer* peer, enjPacket& p);	// From-Client
 };
 

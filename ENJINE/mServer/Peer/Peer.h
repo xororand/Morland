@@ -23,12 +23,14 @@ public:
 	* not_verifed - не прошел верификацию протокола
 	* verifed - прошел верификацию протокола
 	* logged_in - прислал логин-данные которые есть в базе
+	* sync_ready - прошедший авторизацию и готовый принимать синхру
 	*/
 	enum status {
 		disconnected,
 		not_verifed,
 		verifed,
-		logged_in
+		logged_in,
+		sync_ready
 	};
 private:
 	size_t idx = 0;

@@ -24,7 +24,8 @@ WorldScene::WorldScene(Game* game) {
 	}
 }
 
-void WorldScene::drawMain(Time delta_t)
+// Игровая графика
+void WorldScene::drawGame(Time delta_t)
 {
 	ImGui::ShowDemoWindow();
 
@@ -32,7 +33,15 @@ void WorldScene::drawMain(Time delta_t)
 	//ui->drawBackgroundSpaceCircleEffect(delta_t.asSeconds());
 }
 
+// Игровая логика
 void WorldScene::onProcess() {
+	RenderWindow* rw = getGame()->getRenderWindow();
+	NetworkManager* nm = getGame()->getNetworkManager();
+
+	if (nm->is_sync != true) { 
+		nm->c_sync_ready();
+		return;
+	}
 
 }
 
@@ -49,7 +58,7 @@ void WorldScene::onDraw() {
 
 	switch (getPage()) {
 
-	case main:	drawMain(delta_t);	break;
+	case game:	drawGame(delta_t);	break;
 
 	}
 

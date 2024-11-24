@@ -8,7 +8,7 @@
 #define MAX_PEER_PING						5000	// MS
 #define MAX_PEER_TIMEOUT					10		// סוך
 #define MAX_UNLOGED_PEER_TIME_CONNECTED		300		// סוך
-#define MAX_ONLY_PING_PACKETS_TIMEOUT		1800
+#define MAX_ONLY_PING_PACKETS_TIMEOUT		1800	// סוך הכÿ AFK
 #define MAX_UNK_PACKETS						20		// ״ׂ
 #define MAX_FAILED_LOGINS					10		// ״ׂ
 
@@ -24,3 +24,4 @@
 #define C_PING				0
 #define C_REGISTER_USER		1 // [wstr]username, [wstr]password
 #define C_LOGIN_USER		2 // [wstr]username, [wstr]password
+#define C_SYNC_READY		3
