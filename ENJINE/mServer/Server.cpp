@@ -40,8 +40,8 @@ int Server::run() {
     // Ждем окончания работы потоков
     for (auto t : m_threads) t->join();     
 
-    // TODO: сохранение состояния мира
-    
+    saveState();
+
     // при отключении пира удаляется и тело игрока если оно было
     disconnectAllPeers();
 
@@ -53,6 +53,12 @@ int Server::run() {
     delete m_window;
 
     return 0;
+}
+
+void Server::saveState()
+{
+    // Сохраняем мир
+    getWorldManager()->save();
 }
 
 
@@ -97,6 +103,17 @@ void Server::addPeer(TcpSocket* sock) {
 void Server::delPeer(sf::Uint16 idx) {
     delp(m_peers[idx])
 }
+void Server::syncPeerByPeer(sf::Uint16 idfrom, sf::Uint16 idto) {
+    std::lock_guard<std::mutex> lock(peers_internal_mutex);
+    if (idto > m_peers.size() || idfrom > m_peers.size()) return;
+    Peer* from = m_peers[idfrom];
+    Peer* to = m_peers[idto];
+    if (from == nullptr || to == nullptr) return;
+
+    // Отправляем пирам синхронизацию
+    // От idfrom -> idto
+
+}
 void Server::disconnectPeer(sf::Uint16 idx) {
     std::lock_guard<std::mutex> lock(peers_internal_mutex);
     if ( !isPeerExists(idx) ) return;
@@ -110,6 +127,12 @@ void Server::disconnectPeer(sf::Uint16 idx) {
 
     peer->setStatus(Peer::status::disconnected);
     peer->getTcp()->disconnect();
+
+    // Вызываем десинхронизацию всем синхронизируемым
+    for (auto syncpeer : peer->getSyncPeers()) {
+        peer->onPeerRemove2Sync(syncpeer);
+        syncpeer->onPeerRemove2Sync(peer);
+    }
 
     // Удаляем из объектов мира
     getWorldManager()->despawnPlayer(peer);

@@ -38,6 +38,7 @@ public:
 
 	error add_user(Peer* peer, std::wstring username, std::wstring password);
 	void update_user_pos(S_PlayerObj* pobj, b2Vec2 pos);
+	void update_user_pos(S_PlayerObj* pobj);
 	b2Vec2 get_user_pos(Peer* peer);
 };
 

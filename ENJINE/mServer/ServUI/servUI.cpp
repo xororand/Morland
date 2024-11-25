@@ -76,6 +76,7 @@ void servUI::drawDebug() {
             L"ID",
             L"PING",
             L"USERNAME",
+            L"POS",
             L"STATUS",
             L"IP:PORT",
             L""
@@ -95,6 +96,7 @@ void servUI::drawDebug() {
             {
                 Peer* peer = peers[row];
                 if (peer == nullptr) continue; // пропуск пустых ячеек, освобожденных после выхода игроков
+                S_PlayerObj* pobj = peer->getPlayerObj();
 
                 ImGui::TableNextRow();
 
@@ -107,17 +109,24 @@ void servUI::drawDebug() {
                 ImGui::TableSetColumnIndex(2);
                 ImGui::Text("%s", to_ancii(peer->getUsername()));
 
+                b2Vec2 pos = b2Vec2(0.0f, 0.0f);
+                if (pobj != nullptr) pos = b2Body_GetPosition(pobj->getBodyID());
+
                 ImGui::TableSetColumnIndex(3);
+                ImGui::Text("%f|%f", pos.x, pos.y);
+
+                ImGui::TableSetColumnIndex(4);
                 ImGui::Text("%s", to_ancii(Peer::to_wstring(peer->getStatus())) );
 
                 TcpSocket* tcp = peer->getTcp();
-                ImGui::TableSetColumnIndex(4);
+                ImGui::TableSetColumnIndex(5);
                 ImGui::Text("%s:%d", tcp->getRemoteAddress().toString().c_str(), tcp->getLocalPort());
 
-                ImGui::TableSetColumnIndex(5);
-                if (ImGui::Button("Disconnect")) {
+                ImGui::TableSetColumnIndex(6);
+                std::string but_dis_name = std::format("Disconnect###{}", row);
+                if (ImGui::Button(but_dis_name.c_str())) {
                     peer->setDisconnectReason(L"Admin");
-                    peer->setStatus(Peer::disconnected);
+                    peer->disconnect();
                 }
             }
             ImGui::EndTable();

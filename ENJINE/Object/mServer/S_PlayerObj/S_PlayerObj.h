@@ -16,6 +16,7 @@ public:
 	Peer* getPeer()			{ return m_peer; }
 	b2BodyId getBodyID()	{ return m_bodyId; }
 
+	virtual void save();
 	virtual void onProcess();
 };
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "version.h"
+#include "defines.h"
 
 #include "SFML/Graphics.hpp"
 #include <imgui-SFML.h>
@@ -62,10 +63,12 @@ public:
 	Server(float tps = (float)(1.0 / MAX_TPS));
 	int run();
 	void stop() { is_run = false; }
+	void saveState();
 
 	std::deque<Peer*> getPeers();
 	void addPeer(TcpSocket* sock);
 	void delPeer(sf::Uint16 idx); // Удаляет безопасно пир из массива
+	void syncPeerByPeer(sf::Uint16 idfrom, sf::Uint16 idto);
 	void disconnectPeer(sf::Uint16 idx);
 	void disconnectAllPeers();
 	bool isPeerExists(sf::Uint16 idx);

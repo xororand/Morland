@@ -52,8 +52,8 @@ void DBManager::init()
         "`ID` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
         "`username` VARCHAR(256) NOT NULL, "
         "`password` VARCHAR(256) NOT NULL,"
-        "`lastXpos` DOUBLE NOT NULL DEFAULT 0,"
-        "`lastYpos` DOUBLE NOT NULL DEFAULT 0,"
+        "`lastXpos` REAL NOT NULL DEFAULT 0,"
+        "`lastYpos` REAL NOT NULL DEFAULT 0,"
         "`regIP`    VARCHAR(39) NOT NULL,"
         "`lastIP`   VARCHAR(39) NOT NULL"
         ");";
@@ -160,6 +160,22 @@ void DBManager::update_user_pos(S_PlayerObj* pobj, b2Vec2 pos) {
 
     // Если пира нет - нет и имени игрока - нельзя записать новые значения в базу
     if (peer == nullptr) return;
+
+    std::wstring username = peer->getUsername();
+
+    std::string query = std::format("UPDATE users SET lastXpos = '{}', lastYpos = '{}' WHERE username = '{}'", pos.x, pos.y, to_ancii(username));
+    sqlite3_exec(m_db, query.c_str(), NULL, NULL, NULL);
+}
+void DBManager::update_user_pos(S_PlayerObj* pobj)
+{
+    Peer* peer = pobj->getPeer();
+
+    // Если пира нет - нет и имени игрока - нельзя записать новые значения в базу
+    if (peer == nullptr) return;
+
+    if (!b2Body_IsValid(pobj->getBodyID())) return;
+
+    b2Vec2 pos = b2Body_GetPosition(pobj->getBodyID());
 
     std::wstring username = peer->getUsername();
 

@@ -40,6 +40,8 @@ private:
 	Server*			m_server		= nullptr;
 	S_PlayerObj*	m_playerobj		= nullptr;
 
+	std::vector<Peer*> sync_peers;
+
 	TcpSocket*		m_tcp			= nullptr;;
 
 	time_t first_connect_t;
@@ -61,6 +63,10 @@ public:
 
 	void process();
 	Server* getServer() { return m_server; }
+
+	std::vector<Peer*> getSyncPeers() { return sync_peers; }
+	void onPeerAdd2Sync(Peer* peer);
+	void onPeerRemove2Sync(Peer* peer);
 
 	static std::wstring to_wstring(status s);
 

@@ -51,7 +51,7 @@ void Peer::process() {
 
 	// ÏÈÍÃÓÅÌ ÊËÈÅÍÒÀ ÊÀÆÄÛÅ n ÑÅÊÓÍÄ
 	if (lpp_timeout >= SERVER_PING_PEER_DELAY) ping();
-	
+
 	// ÏÐÈÍÈÌÀÅÌ TCP ÏÀÊÅÒÛ
 	Socket::Status tcp_status = (Socket::Status)( serv->getPacketManager()->process_packet(this) );
 
@@ -64,6 +64,35 @@ void Peer::process() {
 		setDisconnectReason(L"Receive TCP failed");
 		setStatus(status::disconnected); 
 	}
+
+	// Ñèíõðîíèçèðóåì ïèðû
+	for (auto peer : sync_peers) { 
+		S_PlayerObj* pobj = peer->getPlayerObj();
+		if (pobj == nullptr) continue;
+		getServer()->syncPeerByPeer(this->getID(), peer->getID()); 
+	}
+}
+
+void Peer::onPeerAdd2Sync(Peer* peer) {
+	if (peer == nullptr) return;
+	if (peer == this) return;
+
+	sync_peers.push_back(peer);
+
+	getServer()->getLogger()->info( std::format(L"[sync] {} += {}", getUsername(), peer->getUsername()).c_str() );
+}
+
+void Peer::onPeerRemove2Sync(Peer* peer) {
+	if (peer == nullptr) return;
+	if (peer == this) return;
+
+	auto it = std::find(sync_peers.begin(), sync_peers.end(), peer);
+
+	if (it == sync_peers.end()) return;
+
+	sync_peers.erase(it);
+
+	getServer()->getLogger()->info( std::format(L"[sync] {} -= {}", getUsername(), peer->getUsername()).c_str() );
 }
 
 std::wstring Peer::to_wstring(status s)

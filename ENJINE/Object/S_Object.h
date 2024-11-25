@@ -10,6 +10,7 @@ public:
     };
 
     virtual ~S_Object() = default;
+    virtual void save() { };
 
     WorldManager* getWM()           { return m_wm; }
     void setWM(WorldManager* wm)    { this->m_wm = wm; }
